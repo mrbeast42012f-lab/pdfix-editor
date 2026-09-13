@@ -7,337 +7,418 @@
 <title>PDFix - All-in-One PDF Tools</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
 
 <style>
-
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
 }
 
 body{
-background:#f7f8fc;
-color:#171717;
+  background:#f7f8fc;
+  color:#171717;
 }
 
 header{
-height:70px;
-background:#fff;
-border-bottom:1px solid #e5e7eb;
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:0 6%;
-position:sticky;
-top:0;
-z-index:50;
+  height:70px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 6%;
+  position:sticky;
+  top:0;
+  z-index:50;
 }
 
 .logo{
-font-size:27px;
-font-weight:800;
-letter-spacing:-1px;
+  font-size:27px;
+  font-weight:800;
+  letter-spacing:-1px;
 }
 
 .logo span{
-color:#e5093f;
+  color:#e5093f;
 }
 
-.nav button{
-background:#111827;
-color:#fff;
-border:0;
-padding:11px 18px;
-border-radius:8px;
-cursor:pointer;
-font-weight:bold;
+.nav button,
+.toolbar button{
+  border:0;
+  padding:10px 15px;
+  border-radius:8px;
+  background:#111827;
+  color:#fff;
+  cursor:pointer;
+  font-weight:bold;
 }
 
 .hero{
-text-align:center;
-padding:65px 18px 45px;
+  text-align:center;
+  padding:65px 18px 45px;
 }
 
 .hero h1{
-font-size:46px;
-line-height:1.1;
-margin-bottom:18px;
+  font-size:46px;
+  line-height:1.1;
+  margin-bottom:18px;
 }
 
 .hero h1 span{
-color:#e5093f;
+  color:#e5093f;
 }
 
 .hero p{
-color:#667085;
-font-size:18px;
+  color:#667085;
+  font-size:18px;
 }
 
 .upload{
-max-width:700px;
-margin:35px auto 0;
-background:#fff;
-border:2px dashed #cbd5e1;
-border-radius:18px;
-padding:48px 20px;
+  max-width:700px;
+  margin:35px auto 0;
+  background:#fff;
+  border:2px dashed #cbd5e1;
+  border-radius:18px;
+  padding:48px 20px;
 }
 
 .upload-icon{
-font-size:55px;
-margin-bottom:15px;
+  font-size:55px;
+  margin-bottom:15px;
 }
 
 .upload h2{
-margin-bottom:8px;
+  margin-bottom:8px;
 }
 
 .upload p{
-font-size:14px;
+  font-size:14px;
 }
 
 .upload input{
-display:none;
+  display:none;
 }
 
 .upload-label{
-display:inline-block;
-margin-top:20px;
-padding:14px 28px;
-background:#e5093f;
-color:white;
-border-radius:9px;
-font-weight:bold;
-cursor:pointer;
+  display:inline-block;
+  margin-top:20px;
+  padding:14px 28px;
+  background:#e5093f;
+  color:white;
+  border-radius:9px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
 .section{
-max-width:1100px;
-margin:auto;
-padding:20px;
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
 }
 
 .section h2{
-text-align:center;
-margin-bottom:25px;
+  text-align:center;
+  margin-bottom:25px;
 }
 
 .tools{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:16px;
-padding-bottom:70px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  padding-bottom:70px;
 }
 
 .tool{
-background:#fff;
-border:1px solid #e5e7eb;
-border-radius:14px;
-padding:23px 18px;
-cursor:pointer;
-transition:.2s;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:23px 18px;
+  cursor:pointer;
+  transition:.2s;
 }
 
 .tool:hover{
-transform:translateY(-4px);
-box-shadow:0 10px 25px #00000012;
+  transform:translateY(-4px);
+  box-shadow:0 10px 25px #00000012;
 }
 
 .tool-icon{
-font-size:31px;
-margin-bottom:12px;
+  font-size:31px;
+  margin-bottom:12px;
 }
 
 .tool h3{
-font-size:17px;
-margin-bottom:7px;
+  font-size:17px;
+  margin-bottom:7px;
 }
 
 .tool p{
-font-size:13px;
-color:#667085;
-line-height:1.5;
+  font-size:13px;
+  color:#667085;
+  line-height:1.5;
 }
 
 .workspace{
-display:none;
-max-width:1200px;
-margin:20px auto;
-padding:15px;
+  display:none;
+  max-width:1200px;
+  margin:20px auto;
+  padding:15px;
 }
 
 .workspace.show{
-display:block;
+  display:block;
 }
 
 .toolbar{
-background:white;
-border:1px solid #ddd;
-padding:12px;
-border-radius:10px;
-display:flex;
-justify-content:space-between;
-gap:10px;
-flex-wrap:wrap;
-margin-bottom:15px;
+  background:white;
+  border:1px solid #ddd;
+  padding:12px;
+  border-radius:10px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
 }
 
-.toolbar button{
-border:0;
-padding:10px 14px;
-border-radius:7px;
-background:#111827;
-color:white;
-cursor:pointer;
+.toolbar-left,
+.toolbar-right{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
 }
 
 .toolbar .red{
-background:#e5093f;
+  background:#e5093f;
+}
+
+.toolbar .danger{
+  background:#b91c1c;
 }
 
 .pdf-area{
-background:#dfe3e8;
-border-radius:14px;
-min-height:500px;
-padding:20px;
-overflow:auto;
+  background:#dfe3e8;
+  border-radius:14px;
+  min-height:500px;
+  padding:20px;
+  overflow:auto;
 }
 
 .pdf-page{
-position:relative;
-background:#fff;
-width:max-content;
-margin:0 auto 25px;
-box-shadow:0 5px 25px #0003;
+  position:relative;
+  background:#fff;
+  width:max-content;
+  margin:0 auto 25px;
+  box-shadow:0 5px 25px #0003;
+  user-select:none;
 }
 
 .pdf-page canvas{
-display:block;
+  display:block;
 }
 
 .text-item{
-position:absolute;
-min-width:100px;
-padding:5px;
-border:1px dashed #555;
-background:#ffffffdd;
-cursor:move;
+  position:absolute;
+  min-width:100px;
+  padding:5px 7px;
+  border:1px dashed #555;
+  background:#ffffffdd;
+  cursor:move;
+  z-index:5;
+  white-space:pre-wrap;
+  user-select:text;
+}
+
+.text-item:focus{
+  outline:2px solid #e5093f;
 }
 
 .signature-item{
-position:absolute;
-width:190px;
-cursor:move;
+  position:absolute;
+  width:190px;
+  max-width:45%;
+  cursor:move;
+  z-index:6;
+  border:1px dashed #777;
+  background:#ffffff88;
+}
+
+.item-selected{
+  outline:2px solid #e5093f;
+}
+
+.page-number{
+  position:absolute;
+  bottom:-22px;
+  left:0;
+  right:0;
+  text-align:center;
+  color:#555;
+  font-size:12px;
+}
+
+.empty-message{
+  text-align:center;
+  color:#667085;
+  padding:80px 20px;
 }
 
 .modal{
-display:none;
-position:fixed;
-inset:0;
-background:#0009;
-z-index:100;
-align-items:center;
-justify-content:center;
-padding:15px;
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#0009;
+  z-index:100;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
 }
 
 .modal.show{
-display:flex;
+  display:flex;
 }
 
 .modal-box{
-width:100%;
-max-width:540px;
-background:#fff;
-border-radius:16px;
-padding:22px;
+  width:100%;
+  max-width:540px;
+  max-height:90vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:16px;
+  padding:22px;
 }
 
 .modal-box h2{
-margin-bottom:18px;
+  margin-bottom:18px;
 }
 
-.modal-box input{
-width:100%;
-padding:12px;
-border:1px solid #d1d5db;
-border-radius:8px;
-margin-bottom:14px;
+.modal-box input,
+.modal-box select{
+  width:100%;
+  padding:12px;
+  border:1px solid #d1d5db;
+  border-radius:8px;
+  margin-bottom:14px;
+}
+
+.modal-box label{
+  display:block;
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:7px;
 }
 
 .signature-pad{
-width:100%;
-height:210px;
-border:2px dashed #aaa;
-border-radius:10px;
-background:#fff;
+  width:100%;
+  height:210px;
+  border:2px dashed #aaa;
+  border-radius:10px;
+  background:#fff;
+  touch-action:none;
 }
 
 .actions{
-display:flex;
-justify-content:flex-end;
-gap:10px;
-margin-top:15px;
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:15px;
+  flex-wrap:wrap;
 }
 
 .actions button{
-border:0;
-padding:10px 16px;
-border-radius:8px;
-cursor:pointer;
+  border:0;
+  padding:10px 16px;
+  border-radius:8px;
+  cursor:pointer;
 }
 
 .primary{
-background:#e5093f;
-color:white;
+  background:#e5093f;
+  color:white;
+}
+
+.secondary{
+  background:#111827;
+  color:white;
 }
 
 footer{
-background:#111827;
-color:#aaa;
-text-align:center;
-padding:35px 15px;
+  background:#111827;
+  color:#aaa;
+  text-align:center;
+  padding:35px 15px;
+  margin-top:30px;
+}
+
+.status{
+  display:none;
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:10px;
+  padding:12px;
+  margin-bottom:15px;
+  color:#444;
+}
+
+.status.show{
+  display:block;
 }
 
 @media(max-width:850px){
+  .tools{
+    grid-template-columns:repeat(2,1fr);
+  }
 
-.tools{
-grid-template-columns:repeat(2,1fr);
-}
-
-.hero h1{
-font-size:36px;
-}
-
+  .hero h1{
+    font-size:36px;
+  }
 }
 
 @media(max-width:500px){
+  .tools{
+    grid-template-columns:1fr;
+  }
 
-.tools{
-grid-template-columns:1fr;
-}
+  .hero{
+    padding-top:45px;
+  }
 
-.hero{
-padding-top:45px;
-}
+  .hero h1{
+    font-size:31px;
+  }
 
-.hero h1{
-font-size:31px;
-}
+  header{
+    padding:0 18px;
+  }
 
-header{
-padding:0 18px;
-}
+  .logo{
+    font-size:24px;
+  }
 
-.logo{
-font-size:24px;
-}
+  .nav button{
+    padding:9px 12px;
+  }
 
+  .toolbar{
+    flex-direction:column;
+  }
+
+  .toolbar-left,
+  .toolbar-right{
+    width:100%;
+  }
+
+  .toolbar button{
+    flex:1;
+  }
+
+  .pdf-area{
+    padding:10px;
+  }
 }
 </style>
 </head>
@@ -345,296 +426,366 @@ font-size:24px;
 <body>
 
 <header>
+  <div class="logo">PDF<span>ix</span></div>
 
-<div class="logo">
-PDF<span>ix</span>
-</div>
-
-<div class="nav">
-<button onclick="choosePDF()">Upload PDF</button>
-</div>
-
+  <div class="nav">
+    <button onclick="choosePDF()">Upload PDF</button>
+  </div>
 </header>
 
 
-<section class="hero">
+<section class="hero" id="hero">
 
-<h1>
-Everything PDF.<br>
-<span>Made Simple.</span>
-</h1>
+  <h1>
+    Everything PDF.<br>
+    <span>Made Simple.</span>
+  </h1>
 
-<p>
-Edit, Fill, Sign, Merge, Split and manage your PDF online.
-</p>
+  <p>
+    Edit, Fill, Sign, Merge, Split and manage your PDF online.
+  </p>
 
-<div class="upload">
+  <div class="upload">
 
-<div class="upload-icon">📄</div>
+    <div class="upload-icon">📄</div>
 
-<h2>Upload your PDF</h2>
+    <h2>Upload your PDF</h2>
 
-<p>Select a PDF from your phone or computer</p>
+    <p>Select a PDF from your phone or computer</p>
 
-<label class="upload-label">
+    <label class="upload-label">
+      Choose PDF
 
-Choose PDF
+      <input
+        id="pdfInput"
+        type="file"
+        accept="application/pdf"
+      >
+    </label>
 
-<input
-id="pdfInput"
-type="file"
-accept="application/pdf"
->
-
-</label>
-
-</div>
+  </div>
 
 </section>
 
 
-<section class="section">
+<section class="section" id="toolsSection">
 
-<h2>All PDF Tools</h2>
+  <h2>All PDF Tools</h2>
 
-<div class="tools">
+  <div class="tools">
 
-<div class="tool" onclick="choosePDF()">
-<div class="tool-icon">✏️</div>
-<h3>Edit PDF</h3>
-<p>Add text and edit your document.</p>
-</div>
+    <div class="tool" onclick="choosePDF()">
+      <div class="tool-icon">✏️</div>
+      <h3>Edit PDF</h3>
+      <p>Add text and edit your document.</p>
+    </div>
 
+    <div class="tool" onclick="openSign()">
+      <div class="tool-icon">📝</div>
+      <h3>Fill & Sign</h3>
+      <p>Fill forms and sign documents.</p>
+    </div>
 
-<div class="tool" onclick="openSign()">
-<div class="tool-icon">📝</div>
-<h3>Fill & Sign</h3>
-<p>Fill forms and sign documents.</p>
-</div>
+    <div class="tool" onclick="openSign()">
+      <div class="tool-icon">✍️</div>
+      <h3>Draw Signature</h3>
+      <p>Create a signature with your finger.</p>
+    </div>
 
+    <div class="tool" onclick="mergeOpen()">
+      <div class="tool-icon">📑</div>
+      <h3>Merge PDF</h3>
+      <p>Combine multiple PDFs.</p>
+    </div>
 
-<div class="tool" onclick="openSign()">
-<div class="tool-icon">✍️</div>
-<h3>Draw Signature</h3>
-<p>Create a signature with your finger.</p>
-</div>
+    <div class="tool" onclick="splitOpen()">
+      <div class="tool-icon">✂️</div>
+      <h3>Split PDF</h3>
+      <p>Extract one or more pages.</p>
+    </div>
 
+    <div class="tool" onclick="rotatePDF()">
+      <div class="tool-icon">🔄</div>
+      <h3>Rotate PDF</h3>
+      <p>Rotate your PDF pages.</p>
+    </div>
 
-<div class="tool" onclick="mergeOpen()">
-<div class="tool-icon">📑</div>
-<h3>Merge PDF</h3>
-<p>Combine multiple PDFs.</p>
-</div>
+    <div class="tool" onclick="signatureCheck()">
+      <div class="tool-icon">🔍</div>
+      <h3>Signature Check</h3>
+      <p>Inspect signature-related content.</p>
+    </div>
 
+    <div class="tool" onclick="compressOpen()">
+      <div class="tool-icon">📦</div>
+      <h3>Compress PDF</h3>
+      <p>Create a smaller optimized PDF copy.</p>
+    </div>
 
-<div class="tool" onclick="splitOpen()">
-<div class="tool-icon">✂️</div>
-<h3>Split PDF</h3>
-<p>Extract a page from a PDF.</p>
-</div>
-
-
-<div class="tool" onclick="rotatePDF()">
-<div class="tool-icon">🔄</div>
-<h3>Rotate PDF</h3>
-<p>Rotate your PDF pages.</p>
-</div>
-
-
-<div class="tool" onclick="signatureCheck()">
-<div class="tool-icon">🔍</div>
-<h3>Signature Check</h3>
-<p>Inspect signature-related content.</p>
-</div>
-
-
-<div class="tool" onclick="choosePDF()">
-<div class="tool-icon">📦</div>
-<h3>Compress PDF</h3>
-<p>Create an optimized PDF copy.</p>
-</div>
-
-</div>
-
+  </div>
 </section>
 
 
 <section
-id="workspace"
-class="workspace"
+  id="workspace"
+  class="workspace"
 >
 
-<div class="toolbar">
+  <div class="status" id="status"></div>
 
-<div>
+  <div class="toolbar">
 
-<button onclick="addText()">
-➕ Add Text
-</button>
+    <div class="toolbar-left">
 
-<button onclick="openSign()">
-✍️ Sign
-</button>
+      <button onclick="addText()">
+        ➕ Add Text
+      </button>
 
-</div>
+      <button onclick="openSign()">
+        ✍️ Sign
+      </button>
 
-<div>
+      <button onclick="undoLast()">
+        ↩️ Undo
+      </button>
 
-<button onclick="rotatePDF()">
-🔄 Rotate
-</button>
+    </div>
 
-<button
-class="red"
-onclick="downloadPDF()"
->
-⬇️ Download PDF
-</button>
+    <div class="toolbar-right">
 
-</div>
+      <button onclick="rotatePDF()">
+        🔄 Rotate
+      </button>
 
-</div>
+      <button
+        class="danger"
+        onclick="resetPDF()"
+      >
+        ✕ Clear
+      </button>
 
+      <button
+        class="red"
+        onclick="downloadPDF()"
+      >
+        ⬇️ Download PDF
+      </button>
 
-<div
-id="pdfArea"
-class="pdf-area"
-></div>
+    </div>
+
+  </div>
+
+  <div
+    id="pdfArea"
+    class="pdf-area"
+  ></div>
 
 </section>
 
 
-<!-- SIGNATURE -->
+<!-- SIGNATURE MODAL -->
 
 <div
-id="signModal"
-class="modal"
+  id="signModal"
+  class="modal"
 >
 
-<div class="modal-box">
+  <div class="modal-box">
 
-<h2>Fill & Sign</h2>
+    <h2>📝 Fill & Sign</h2>
 
-<input
-id="nameText"
-placeholder="Type name or text"
->
+    <label>
+      Type name or text
+    </label>
 
-<p style="margin-bottom:8px">
-Draw your signature
-</p>
+    <input
+      id="nameText"
+      placeholder="Example: Kishor"
+    >
 
-<canvas
-id="signaturePad"
-class="signature-pad"
-></canvas>
+    <p style="margin-bottom:8px">
+      Draw your signature
+    </p>
 
-<p style="margin:14px 0 8px">
-Or upload signature
-</p>
+    <canvas
+      id="signaturePad"
+      class="signature-pad"
+    ></canvas>
 
-<input
-id="signatureFile"
-type="file"
-accept="image/*"
->
+    <div class="actions" style="justify-content:flex-start">
+      <button
+        class="secondary"
+        onclick="clearSignature()"
+      >
+        Clear Drawing
+      </button>
+    </div>
 
-<div class="actions">
+    <p style="margin:14px 0 8px">
+      Or upload signature
+    </p>
 
-<button onclick="closeModals()">
-Cancel
-</button>
+    <input
+      id="signatureFile"
+      type="file"
+      accept="image/png,image/jpeg,image/jpg"
+    >
 
-<button
-class="primary"
-onclick="applySignature()"
->
-Add Signature
-</button>
+    <div class="actions">
+
+      <button onclick="closeModals()">
+        Cancel
+      </button>
+
+      <button
+        class="primary"
+        onclick="applySignature()"
+      >
+        Add to PDF
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
 
-</div>
 
-</div>
-
-
-<!-- MERGE -->
+<!-- MERGE MODAL -->
 
 <div
-id="mergeModal"
-class="modal"
+  id="mergeModal"
+  class="modal"
 >
 
-<div class="modal-box">
+  <div class="modal-box">
 
-<h2>Merge PDF</h2>
+    <h2>📑 Merge PDF</h2>
 
-<p style="margin-bottom:15px">
-Select two or more PDF files.
-</p>
+    <p style="margin-bottom:15px">
+      Select two or more PDF files.
+    </p>
 
-<input
-id="mergeInput"
-type="file"
-accept="application/pdf"
-multiple
->
+    <input
+      id="mergeInput"
+      type="file"
+      accept="application/pdf"
+      multiple
+    >
 
-<div class="actions">
+    <div class="actions">
 
-<button onclick="closeModals()">
-Cancel
-</button>
+      <button onclick="closeModals()">
+        Cancel
+      </button>
 
-<button
-class="primary"
-onclick="mergePDF()"
->
-Merge & Download
-</button>
+      <button
+        class="primary"
+        onclick="mergePDF()"
+      >
+        Merge & Download
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
 
-</div>
 
-</div>
-
-
-<!-- SPLIT -->
+<!-- SPLIT MODAL -->
 
 <div
-id="splitModal"
-class="modal"
+  id="splitModal"
+  class="modal"
 >
 
-<div class="modal-box">
+  <div class="modal-box">
 
-<h2>Split PDF</h2>
+    <h2>✂️ Split PDF</h2>
 
-<input
-id="splitPage"
-type="number"
-min="1"
-placeholder="Enter page number"
->
+    <p style="margin-bottom:12px;color:#666">
+      Enter a page number or range.
+      Example: 2 or 2-5
+    </p>
 
-<div class="actions">
+    <input
+      id="splitPage"
+      type="text"
+      placeholder="Example: 2-5"
+    >
 
-<button onclick="closeModals()">
-Cancel
-</button>
+    <div class="actions">
 
-<button
-class="primary"
-onclick="splitPDF()"
->
-Extract Page
-</button>
+      <button onclick="closeModals()">
+        Cancel
+      </button>
+
+      <button
+        class="primary"
+        onclick="splitPDF()"
+      >
+        Split & Download
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
 
-</div>
+
+<!-- COMPRESS MODAL -->
+
+<div
+  id="compressModal"
+  class="modal"
+>
+
+  <div class="modal-box">
+
+    <h2>📦 Compress PDF</h2>
+
+    <p style="margin-bottom:15px;color:#666">
+      Choose image quality. Lower quality creates a smaller PDF.
+    </p>
+
+    <label>
+      Quality
+    </label>
+
+    <select id="compressQuality">
+
+      <option value="0.75">
+        High - Better quality
+      </option>
+
+      <option value="0.55" selected>
+        Medium - Recommended
+      </option>
+
+      <option value="0.35">
+        Low - Smaller file
+      </option>
+
+    </select>
+
+    <div class="actions">
+
+      <button onclick="closeModals()">
+        Cancel
+      </button>
+
+      <button
+        class="primary"
+        onclick="compressPDF()"
+      >
+        Compress & Download
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
 
@@ -642,58 +793,65 @@ Extract Page
 <!-- SIGNATURE CHECK -->
 
 <div
-id="checkModal"
-class="modal"
+  id="checkModal"
+  class="modal"
 >
 
-<div class="modal-box">
+  <div class="modal-box">
 
-<h2>🔍 Signature Check</h2>
+    <h2>🔍 Signature Check</h2>
 
-<p style="line-height:1.7;color:#555">
+    <div id="checkResult">
+      <p style="line-height:1.7;color:#555">
+        This tool can inspect signature-related
+        information available inside the PDF.
 
-This tool is designed to inspect
-signature-related content in a document.
+        <br><br>
 
-<br><br>
+        <b>Important:</b>
+        This does not prove that an Aadhaar card,
+        identity document, person, or signature is genuine.
 
-<b>Important:</b>
+        <br><br>
 
-It does not certify that an Aadhaar Card,
-identity document, or signature is genuine.
+        Official identity verification must be performed
+        through the appropriate official service.
+      </p>
+    </div>
 
-Official identity verification should be
-done through the appropriate official service.
+    <div class="actions">
 
-</p>
+      <button
+        class="primary"
+        onclick="runSignatureInspection()"
+      >
+        Inspect PDF
+      </button>
 
-<div class="actions">
+      <button
+        onclick="closeModals()"
+      >
+        Close
+      </button>
 
-<button
-class="primary"
-onclick="closeModals()"
->
-Close
-</button>
+    </div>
 
-</div>
-
-</div>
+  </div>
 
 </div>
 
 
 <footer>
 
-<strong>PDFix</strong>
+  <strong>PDFix</strong>
 
-<br><br>
+  <br><br>
 
-Edit • Fill • Sign • Merge • Split
+  Edit • Fill • Sign • Merge • Split • Rotate • Compress
 
-<br><br>
+  <br><br>
 
-© 2026 PDFix
+  © 2026 PDFix
 
 </footer>
 
@@ -704,13 +862,15 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
 
-let currentFile=null;
-let currentPDF=null;
-let rotation=0;
-let signaturePad=null;
+let currentFile = null;
+let currentPDF = null;
+let currentBuffer = null;
+let rotation = 0;
+let signaturePad = null;
+let overlayHistory = [];
 
 
-const pdfInput=
+const pdfInput =
 document.getElementById("pdfInput");
 
 
@@ -718,11 +878,11 @@ pdfInput.addEventListener(
 "change",
 async function(){
 
-if(!this.files.length)return;
+  if(!this.files.length) return;
 
-currentFile=this.files[0];
+  currentFile = this.files[0];
 
-await loadPDF(currentFile);
+  await loadPDF(currentFile);
 
 }
 );
@@ -730,521 +890,1450 @@ await loadPDF(currentFile);
 
 function choosePDF(){
 
-pdfInput.click();
+  pdfInput.click();
 
 }
 
 
 async function loadPDF(file){
 
-const buffer=
-await file.arrayBuffer();
+  try{
 
-currentPDF=
-await PDFLib.PDFDocument.load(buffer);
+    showStatus("Loading PDF...");
 
-document.querySelector(".hero")
-.style.display="none";
+    const buffer =
+    await file.arrayBuffer();
 
-document.querySelector(".section")
-.style.display="none";
+    currentBuffer =
+    buffer.slice(0);
 
-document.getElementById("workspace")
-.classList.add("show");
+    currentPDF =
+    await PDFLib.PDFDocument.load(
+      currentBuffer
+    );
 
-await renderPDF(buffer);
+    rotation = 0;
+    overlayHistory = [];
+
+    document.getElementById("hero")
+    .style.display = "none";
+
+    document.getElementById("toolsSection")
+    .style.display = "none";
+
+    document.getElementById("workspace")
+    .classList.add("show");
+
+    await renderPDF(currentBuffer);
+
+    showStatus(
+      "PDF loaded successfully. You can now add text or signature."
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Could not open this PDF. Please try another PDF."
+    );
+
+  }
 
 }
 
 
 async function renderPDF(buffer){
 
-const pdf=
-await pdfjsLib.getDocument({
-data:buffer
-}).promise;
+  const pdf =
+  await pdfjsLib.getDocument({
+    data:buffer
+  }).promise;
 
-const area=
-document.getElementById("pdfArea");
+  const area =
+  document.getElementById("pdfArea");
 
-area.innerHTML="";
+  area.innerHTML = "";
 
-for(
-let i=1;
-i<=pdf.numPages;
-i++
-){
+  for(
+    let i=1;
+    i<=pdf.numPages;
+    i++
+  ){
 
-const page=
-await pdf.getPage(i);
+    const page =
+    await pdf.getPage(i);
 
-const viewport=
-page.getViewport({
-scale:1.25,
-rotation:rotation
-});
+    const viewport =
+    page.getViewport({
+      scale:1.25,
+      rotation:rotation
+    });
 
-const wrapper=
-document.createElement("div");
+    const wrapper =
+    document.createElement("div");
 
-wrapper.className="pdf-page";
+    wrapper.className = "pdf-page";
 
-const canvas=
-document.createElement("canvas");
+    wrapper.dataset.page =
+    String(i);
 
-canvas.width=
-viewport.width;
+    const canvas =
+    document.createElement("canvas");
 
-canvas.height=
-viewport.height;
+    canvas.width =
+    Math.ceil(viewport.width);
 
-wrapper.appendChild(canvas);
+    canvas.height =
+    Math.ceil(viewport.height);
 
-area.appendChild(wrapper);
+    wrapper.appendChild(canvas);
 
-await page.render({
+    const pageNumber =
+    document.createElement("div");
 
-canvasContext:
-canvas.getContext("2d"),
+    pageNumber.className =
+    "page-number";
 
-viewport:viewport
+    pageNumber.innerText =
+    "Page " + i;
 
-}).promise;
+    wrapper.appendChild(pageNumber);
 
-}
+    area.appendChild(wrapper);
+
+    await page.render({
+
+      canvasContext:
+      canvas.getContext("2d"),
+
+      viewport:viewport
+
+    }).promise;
+
+  }
 
 }
 
 
 function addText(){
 
-if(!currentPDF){
+  if(!currentPDF){
 
-alert("Upload a PDF first.");
+    alert("Upload a PDF first.");
 
-return;
+    return;
 
-}
+  }
 
-const page=
-document.querySelector(".pdf-page");
+  const pages =
+  document.querySelectorAll(".pdf-page");
 
-if(!page)return;
+  const page =
+  pages[0];
 
-const text=
-document.createElement("div");
+  if(!page) return;
 
-text.className="text-item";
+  const text =
+  document.createElement("div");
 
-text.contentEditable=true;
+  text.className =
+  "text-item";
 
-text.innerText="Type here";
+  text.contentEditable =
+  true;
 
-text.style.left="50px";
+  text.innerText =
+  "Type here";
 
-text.style.top="50px";
+  text.style.left =
+  "50px";
 
-text.style.fontSize="18px";
+  text.style.top =
+  "50px";
 
-page.appendChild(text);
+  text.style.fontSize =
+  "18px";
 
-text.focus();
+  page.appendChild(text);
+
+  makeDraggable(text);
+
+  overlayHistory.push(text);
+
+  text.focus();
 
 }
 
 
 function openSign(){
 
-if(!currentPDF){
+  if(!currentPDF){
 
-alert("Please upload a PDF first.");
+    alert("Please upload a PDF first.");
 
-return;
+    return;
+
+  }
+
+  document.getElementById("signModal")
+  .classList.add("show");
+
+  setTimeout(()=>{
+
+    const canvas =
+    document.getElementById("signaturePad");
+
+    const rect =
+    canvas.getBoundingClientRect();
+
+    canvas.width =
+    Math.max(300, Math.floor(rect.width));
+
+    canvas.height = 210;
+
+    signaturePad =
+    new SignaturePad(canvas);
+
+  },100);
 
 }
 
-document.getElementById("signModal")
-.classList.add("show");
 
-setTimeout(()=>{
+function clearSignature(){
 
-const canvas=
-document.getElementById("signaturePad");
+  if(signaturePad){
 
-signaturePad=
-new SignaturePad(canvas);
+    signaturePad.clear();
 
-},100);
+  }
 
 }
 
 
 function applySignature(){
 
-const text=
-document.getElementById("nameText").value.trim();
+  const text =
+  document.getElementById("nameText")
+  .value.trim();
 
-const page=
-document.querySelector(".pdf-page");
+  const page =
+  document.querySelector(".pdf-page");
 
-if(!page){
+  if(!page){
 
-closeModals();
+    closeModals();
 
-return;
+    return;
+
+  }
+
+
+  if(text){
+
+    const item =
+    document.createElement("div");
+
+    item.className =
+    "text-item";
+
+    item.innerText =
+    text;
+
+    item.style.left =
+    "50px";
+
+    item.style.top =
+    "100px";
+
+    item.style.fontSize =
+    "20px";
+
+    page.appendChild(item);
+
+    makeDraggable(item);
+
+    overlayHistory.push(item);
+
+  }
+
+
+  if(
+    signaturePad &&
+    !signaturePad.isEmpty()
+  ){
+
+    const img =
+    document.createElement("img");
+
+    img.src =
+    signaturePad.toDataURL("image/png");
+
+    img.className =
+    "signature-item";
+
+    img.style.left =
+    "50px";
+
+    img.style.top =
+    "160px";
+
+    page.appendChild(img);
+
+    makeDraggable(img);
+
+    overlayHistory.push(img);
+
+  }
+
+
+  const file =
+  document.getElementById("signatureFile")
+  .files[0];
+
+
+  if(file){
+
+    const reader =
+    new FileReader();
+
+    reader.onload =
+    function(e){
+
+      const img =
+      document.createElement("img");
+
+      img.src =
+      e.target.result;
+
+      img.className =
+      "signature-item";
+
+      img.style.left =
+      "50px";
+
+      img.style.top =
+      "160px";
+
+      page.appendChild(img);
+
+      makeDraggable(img);
+
+      overlayHistory.push(img);
+
+    };
+
+    reader.readAsDataURL(file);
+
+  }
+
+
+  document.getElementById("nameText")
+  .value = "";
+
+  document.getElementById("signatureFile")
+  .value = "";
+
+  closeModals();
 
 }
 
 
-if(text){
+function makeDraggable(element){
 
-const item=
-document.createElement("div");
+  let dragging = false;
+  let startX = 0;
+  let startY = 0;
+  let originalLeft = 0;
+  let originalTop = 0;
 
-item.className="text-item";
 
-item.innerText=text;
+  element.addEventListener(
+    "pointerdown",
+    function(e){
 
-item.style.left="50px";
+      if(
+        element.classList.contains("text-item") &&
+        element.isContentEditable
+      ){
 
-item.style.top="100px";
+        if(
+          e.target === element &&
+          window.getSelection &&
+          window.getSelection().toString()
+        ){
 
-item.style.fontSize="20px";
+          return;
 
-page.appendChild(item);
+        }
+
+      }
+
+      dragging = true;
+
+      element.classList.add(
+        "item-selected"
+      );
+
+      startX = e.clientX;
+      startY = e.clientY;
+
+      originalLeft =
+      parseFloat(element.style.left || 0);
+
+      originalTop =
+      parseFloat(element.style.top || 0);
+
+      try{
+        element.setPointerCapture(
+          e.pointerId
+        );
+      }catch(err){}
+
+    }
+  );
+
+
+  element.addEventListener(
+    "pointermove",
+    function(e){
+
+      if(!dragging) return;
+
+      const dx =
+      e.clientX - startX;
+
+      const dy =
+      e.clientY - startY;
+
+      element.style.left =
+      Math.max(
+        0,
+        originalLeft + dx
+      ) + "px";
+
+      element.style.top =
+      Math.max(
+        0,
+        originalTop + dy
+      ) + "px";
+
+    }
+  );
+
+
+  element.addEventListener(
+    "pointerup",
+    function(){
+
+      dragging = false;
+
+      element.classList.remove(
+        "item-selected"
+      );
+
+    }
+  );
 
 }
 
 
-if(signaturePad &&
-!signaturePad.isEmpty()){
+function undoLast(){
 
-const img=
-document.createElement("img");
+  if(!overlayHistory.length){
 
-img.src=
-signaturePad.toDataURL("image/png");
+    alert("Nothing to undo.");
 
-img.className="signature-item";
+    return;
 
-img.style.left="50px";
+  }
 
-img.style.top="150px";
+  const item =
+  overlayHistory.pop();
 
-page.appendChild(img);
+  if(item && item.parentNode){
 
-}
+    item.parentNode.removeChild(item);
 
-
-const file=
-document.getElementById("signatureFile")
-.files[0];
-
-if(file){
-
-const reader=
-new FileReader();
-
-reader.onload=function(e){
-
-const img=
-document.createElement("img");
-
-img.src=e.target.result;
-
-img.className="signature-item";
-
-img.style.left="50px";
-
-img.style.top="150px";
-
-page.appendChild(img);
-
-};
-
-reader.readAsDataURL(file);
+  }
 
 }
 
 
-closeModals();
+async function drawOverlaysIntoPDF(){
+
+  const pages =
+  document.querySelectorAll(".pdf-page");
+
+  const pdfPages =
+  currentPDF.getPages();
+
+
+  for(
+    let pageIndex=0;
+    pageIndex<pages.length;
+    pageIndex++
+  ){
+
+    const wrapper =
+    pages[pageIndex];
+
+    const pdfPage =
+    pdfPages[pageIndex];
+
+    const canvas =
+    wrapper.querySelector("canvas");
+
+    if(!canvas || !pdfPage) continue;
+
+
+    const canvasWidth =
+    canvas.width;
+
+    const canvasHeight =
+    canvas.height;
+
+    const pdfWidth =
+    pdfPage.getWidth();
+
+    const pdfHeight =
+    pdfPage.getHeight();
+
+    const scaleX =
+    pdfWidth / canvasWidth;
+
+    const scaleY =
+    pdfHeight / canvasHeight;
+
+
+    const texts =
+    wrapper.querySelectorAll(
+      ".text-item"
+    );
+
+
+    texts.forEach(item=>{
+
+      const rect =
+      item.getBoundingClientRect();
+
+      const parentRect =
+      wrapper.getBoundingClientRect();
+
+      const xPx =
+      rect.left - parentRect.left;
+
+      const yPx =
+      rect.top - parentRect.top;
+
+      const fontSize =
+      parseFloat(
+        getComputedStyle(item)
+        .fontSize
+      ) || 18;
+
+      const x =
+      xPx * scaleX;
+
+      const y =
+      pdfHeight -
+      ((yPx + fontSize) * scaleY);
+
+      const size =
+      Math.max(
+        6,
+        fontSize * scaleX
+      );
+
+      const content =
+      item.innerText
+      .replace(/\n/g," ");
+
+
+      if(content.trim()){
+
+        pdfPage.drawText(
+          content,
+          {
+            x:x,
+            y:y,
+            size:size,
+            color:
+            PDFLib.rgb(
+              0.05,
+              0.05,
+              0.05
+            )
+          }
+        );
+
+      }
+
+    });
+
+
+    const signatures =
+    wrapper.querySelectorAll(
+      ".signature-item"
+    );
+
+
+    for(
+      const img of signatures
+    ){
+
+      try{
+
+        const rect =
+        img.getBoundingClientRect();
+
+        const parentRect =
+        wrapper.getBoundingClientRect();
+
+        const xPx =
+        rect.left - parentRect.left;
+
+        const yPx =
+        rect.top - parentRect.top;
+
+        const widthPx =
+        rect.width;
+
+        const heightPx =
+        rect.height;
+
+        const x =
+        xPx * scaleX;
+
+        const width =
+        widthPx * scaleX;
+
+        const height =
+        heightPx * scaleY;
+
+        const y =
+        pdfHeight -
+        (yPx * scaleY) -
+        height;
+
+
+        let image;
+
+        if(
+          img.src.startsWith(
+            "data:image/png"
+          )
+        ){
+
+          image =
+          await currentPDF
+          .embedPng(img.src);
+
+        }else{
+
+          image =
+          await currentPDF
+          .embedJpg(img.src);
+
+        }
+
+
+        pdfPage.drawImage(
+          image,
+          {
+            x:x,
+            y:y,
+            width:width,
+            height:height
+          }
+        );
+
+      }catch(error){
+
+        console.error(
+          "Signature embedding error:",
+          error
+        );
+
+      }
+
+    }
+
+  }
 
 }
 
 
 async function downloadPDF(){
 
-if(!currentPDF){
+  if(!currentPDF){
 
-alert("Upload a PDF first.");
+    alert("Upload a PDF first.");
 
-return;
+    return;
 
-}
+  }
 
-const pages=
-document.querySelectorAll(".pdf-page");
+  try{
 
-const firstPage=pages[0];
+    showStatus(
+      "Preparing your edited PDF..."
+    );
 
-const pdfPage=
-currentPDF.getPages()[0];
+    await drawOverlaysIntoPDF();
 
-const canvas=
-firstPage.querySelector("canvas");
+    const bytes =
+    await currentPDF.save();
 
-const scaleX=
-pdfPage.getWidth()/canvas.width;
+    downloadFile(
+      bytes,
+      "pdfix-edited.pdf"
+    );
 
-const scaleY=
-pdfPage.getHeight()/canvas.height;
+    showStatus(
+      "PDF downloaded successfully."
+    );
 
+  }catch(error){
 
-const texts=
-firstPage.querySelectorAll(".text-item");
+    console.error(error);
 
+    alert(
+      "Could not create the PDF."
+    );
 
-texts.forEach(item=>{
-
-const x=
-parseFloat(item.style.left||0)*scaleX;
-
-const top=
-parseFloat(item.style.top||0);
-
-const y=
-pdfPage.getHeight()-
-(top+22)*scaleY;
-
-pdfPage.drawText(
-item.innerText,
-{
-x:x,
-y:y,
-size:14
-}
-);
-
-});
-
-
-const bytes=
-await currentPDF.save();
-
-downloadFile(
-bytes,
-"pdfix-edited.pdf"
-);
+  }
 
 }
 
 
-function downloadFile(bytes,name){
+function downloadFile(
+  bytes,
+  name
+){
 
-const blob=
-new Blob(
-[bytes],
-{
-type:"application/pdf"
-}
-);
+  const blob =
+  new Blob(
+    [bytes],
+    {
+      type:"application/pdf"
+    }
+  );
 
-const url=
-URL.createObjectURL(blob);
+  const url =
+  URL.createObjectURL(blob);
 
-const a=
-document.createElement("a");
+  const a =
+  document.createElement("a");
 
-a.href=url;
+  a.href = url;
 
-a.download=name;
+  a.download = name;
 
-document.body.appendChild(a);
+  document.body.appendChild(a);
 
-a.click();
+  a.click();
 
-a.remove();
+  a.remove();
 
-URL.revokeObjectURL(url);
+  setTimeout(
+    ()=>{
+      URL.revokeObjectURL(url);
+    },
+    1000
+  );
 
 }
 
 
 async function rotatePDF(){
 
-if(!currentPDF){
+  if(!currentPDF){
 
-alert("Upload a PDF first.");
+    alert("Upload a PDF first.");
 
-return;
+    return;
 
-}
+  }
 
-const pages=
-currentPDF.getPages();
+  try{
 
-pages.forEach(page=>{
+    const pages =
+    currentPDF.getPages();
 
-const old=
-page.getRotation().angle;
+    pages.forEach(page=>{
 
-page.setRotation(
-PDFLib.degrees(
-(old+90)%360
-)
-);
+      const old =
+      page.getRotation().angle;
 
-});
+      page.setRotation(
+        PDFLib.degrees(
+          (old + 90) % 360
+        )
+      );
 
-rotation=
-(rotation+90)%360;
+    });
 
-const bytes=
-await currentPDF.save();
 
-await renderPDF(bytes);
+    rotation =
+    (rotation + 90) % 360;
+
+
+    const bytes =
+    await currentPDF.save();
+
+
+    currentBuffer =
+    bytes.slice(0);
+
+
+    await renderPDF(
+      currentBuffer
+    );
+
+
+    showStatus(
+      "PDF rotated 90°."
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Could not rotate PDF."
+    );
+
+  }
 
 }
 
 
 function mergeOpen(){
 
-document.getElementById("mergeModal")
-.classList.add("show");
+  document.getElementById("mergeModal")
+  .classList.add("show");
 
 }
 
 
 async function mergePDF(){
 
-const files=
-document.getElementById("mergeInput")
-.files;
+  const files =
+  document.getElementById("mergeInput")
+  .files;
 
-if(files.length<2){
 
-alert("Select at least 2 PDFs.");
+  if(files.length < 2){
 
-return;
+    alert(
+      "Select at least 2 PDFs."
+    );
 
-}
+    return;
 
-const merged=
-await PDFLib.PDFDocument.create();
+  }
 
-for(const file of files){
 
-const buffer=
-await file.arrayBuffer();
+  try{
 
-const doc=
-await PDFLib.PDFDocument.load(buffer);
+    const merged =
+    await PDFLib.PDFDocument
+    .create();
 
-const pages=
-await merged.copyPages(
-doc,
-doc.getPageIndices()
-);
 
-pages.forEach(
-page=>merged.addPage(page)
-);
+    for(
+      const file of files
+    ){
 
-}
+      const buffer =
+      await file.arrayBuffer();
 
-const bytes=
-await merged.save();
+      const doc =
+      await PDFLib.PDFDocument
+      .load(buffer);
 
-downloadFile(
-bytes,
-"pdfix-merged.pdf"
-);
+      const pages =
+      await merged.copyPages(
+        doc,
+        doc.getPageIndices()
+      );
 
-closeModals();
+      pages.forEach(
+        page =>
+        merged.addPage(page)
+      );
+
+    }
+
+
+    const bytes =
+    await merged.save();
+
+
+    downloadFile(
+      bytes,
+      "pdfix-merged.pdf"
+    );
+
+
+    closeModals();
+
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Could not merge PDFs."
+    );
+
+  }
 
 }
 
 
 function splitOpen(){
 
-if(!currentPDF){
+  if(!currentPDF){
 
-alert("Upload a PDF first.");
+    alert(
+      "Please upload a PDF first."
+    );
 
-return;
+    return;
 
-}
+  }
 
-document.getElementById("splitModal")
-.classList.add("show");
+  document.getElementById("splitModal")
+  .classList.add("show");
 
 }
 
 
 async function splitPDF(){
 
-const pageNumber=
-parseInt(
-document.getElementById("splitPage").value
-);
+  const value =
+  document.getElementById("splitPage")
+  .value.trim();
 
-const total=
-currentPDF.getPageCount();
 
-if(
-!pageNumber ||
-pageNumber<1 ||
-pageNumber>total
-){
+  if(!value){
 
-alert("Invalid page number.");
+    alert(
+      "Enter a page number or range."
+    );
 
-return;
+    return;
+
+  }
+
+
+  const total =
+  currentPDF.getPageCount();
+
+
+  let indexes = [];
+
+
+  if(value.includes("-")){
+
+    const parts =
+    value.split("-")
+    .map(Number);
+
+
+    if(
+      parts.length !== 2 ||
+      !Number.isInteger(parts[0]) ||
+      !Number.isInteger(parts[1])
+    ){
+
+      alert(
+        "Invalid range. Example: 2-5"
+      );
+
+      return;
+
+    }
+
+
+    const start =
+    Math.min(parts[0],parts[1]);
+
+    const end =
+    Math.max(parts[0],parts[1]);
+
+
+    if(
+      start < 1 ||
+      end > total
+    ){
+
+      alert(
+        "Page range is outside the PDF."
+      );
+
+      return;
+
+    }
+
+
+    for(
+      let i=start-1;
+      i<end;
+      i++
+    ){
+
+      indexes.push(i);
+
+    }
+
+  }else{
+
+    const page =
+    Number(value);
+
+
+    if(
+      !Number.isInteger(page) ||
+      page < 1 ||
+      page > total
+    ){
+
+      alert(
+        "Invalid page number."
+      );
+
+      return;
+
+    }
+
+
+    indexes.push(page-1);
+
+  }
+
+
+  try{
+
+    const output =
+    await PDFLib.PDFDocument
+    .create();
+
+
+    const copied =
+    await output.copyPages(
+      currentPDF,
+      indexes
+    );
+
+
+    copied.forEach(
+      page =>
+      output.addPage(page)
+    );
+
+
+    const bytes =
+    await output.save();
+
+
+    downloadFile(
+      bytes,
+      "pdfix-split.pdf"
+    );
+
+
+    closeModals();
+
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Could not split PDF."
+    );
+
+  }
 
 }
 
-const output=
-await PDFLib.PDFDocument.create();
 
-const [page]=
-await output.copyPages(
-currentPDF,
-[pageNumber-1]
-);
+function compressOpen(){
 
-output.addPage(page);
+  if(!currentPDF){
 
-const bytes=
-await output.save();
+    alert(
+      "Please upload a PDF first."
+    );
 
-downloadFile(
-bytes,
-"pdfix-page-"+pageNumber+".pdf"
-);
+    return;
 
-closeModals();
+  }
+
+  document.getElementById("compressModal")
+  .classList.add("show");
+
+}
+
+
+async function compressPDF(){
+
+  if(!currentFile){
+
+    alert(
+      "Upload a PDF first."
+    );
+
+    return;
+
+  }
+
+
+  const quality =
+  Number(
+    document.getElementById(
+      "compressQuality"
+    ).value
+  );
+
+
+  try{
+
+    showStatus(
+      "Compressing PDF... Please wait."
+    );
+
+    const source =
+    await pdfjsLib.getDocument({
+      data:currentBuffer.slice(0)
+    }).promise;
+
+
+    const output =
+    await PDFLib.PDFDocument
+    .create();
+
+
+    for(
+      let i=1;
+      i<=source.numPages;
+      i++
+    ){
+
+      const page =
+      await source.getPage(i);
+
+
+      const viewport =
+      page.getViewport({
+        scale:1.25
+      });
+
+
+      const canvas =
+      document.createElement("canvas");
+
+
+      canvas.width =
+      Math.ceil(viewport.width);
+
+      canvas.height =
+      Math.ceil(viewport.height);
+
+
+      const ctx =
+      canvas.getContext("2d");
+
+
+      await page.render({
+
+        canvasContext:ctx,
+
+        viewport:viewport
+
+      }).promise;
+
+
+      const dataUrl =
+      canvas.toDataURL(
+        "image/jpeg",
+        quality
+      );
+
+
+      const image =
+      await output
+      .embedJpg(dataUrl);
+
+
+      const pdfPage =
+      output.addPage([
+        image.width,
+        image.height
+      ]);
+
+
+      pdfPage.drawImage(
+        image,
+        {
+          x:0,
+          y:0,
+          width:image.width,
+          height:image.height
+        }
+      );
+
+    }
+
+
+    const bytes =
+    await output.save();
+
+
+    downloadFile(
+      bytes,
+      "pdfix-compressed.pdf"
+    );
+
+
+    closeModals();
+
+
+    showStatus(
+      "Compressed PDF downloaded. Note: this method rasterizes pages."
+    );
+
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Compression failed."
+    );
+
+  }
 
 }
 
 
 function signatureCheck(){
 
-document.getElementById("checkModal")
-.classList.add("show");
+  if(!currentPDF){
+
+    alert(
+      "Please upload a PDF first."
+    );
+
+    return;
+
+  }
+
+  document.getElementById("checkModal")
+  .classList.add("show");
+
+}
+
+
+async function runSignatureInspection(){
+
+  if(!currentPDF){
+
+    alert(
+      "Upload a PDF first."
+    );
+
+    return;
+
+  }
+
+
+  const result =
+  document.getElementById(
+    "checkResult"
+  );
+
+
+  try{
+
+    let fieldNames = [];
+
+    try{
+
+      const form =
+      currentPDF.getForm();
+
+      const fields =
+      form.getFields();
+
+      fieldNames =
+      fields.map(
+        field =>
+        field.getName()
+      );
+
+    }catch(error){
+
+      fieldNames = [];
+
+    }
+
+
+    const signatureWords =
+    fieldNames.filter(
+      name =>
+      /sign|signature/i.test(name)
+    );
+
+
+    if(signatureWords.length){
+
+      result.innerHTML = `
+        <p style="line-height:1.7;color:#333">
+          <b>Inspection result:</b><br><br>
+          Found signature-related form field(s):
+          <br><br>
+          ${signatureWords.map(
+            x => "• " + escapeHTML(x)
+          ).join("<br>")}
+          <br><br>
+          This only detects PDF content/fields.
+          It does not verify authenticity.
+        </p>
+      `;
+
+    }else{
+
+      result.innerHTML = `
+        <p style="line-height:1.7;color:#333">
+          <b>Inspection result:</b><br><br>
+          No obvious signature form field was detected
+          in this PDF.
+          <br><br>
+          A visible image or handwritten signature may
+          still exist without being a PDF signature field.
+          <br><br>
+          <b>Important:</b>
+          This is not an authenticity or Aadhaar
+          verification service.
+        </p>
+      `;
+
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+    result.innerHTML = `
+      <p>
+        Could not inspect this PDF.
+      </p>
+    `;
+
+  }
+
+}
+
+
+function escapeHTML(text){
+
+  return String(text)
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
+
+}
+
+
+function resetPDF(){
+
+  currentFile = null;
+  currentPDF = null;
+  currentBuffer = null;
+  rotation = 0;
+  overlayHistory = [];
+
+  document.getElementById("pdfArea")
+  .innerHTML = `
+    <div class="empty-message">
+      Upload a PDF to start editing.
+    </div>
+  `;
+
+  document.getElementById("workspace")
+  .classList.remove("show");
+
+  document.getElementById("hero")
+  .style.display = "";
+
+  document.getElementById("toolsSection")
+  .style.display = "";
+
+  document.getElementById("pdfInput")
+  .value = "";
+
+  showStatus("");
+
+}
+
+
+function showStatus(message){
+
+  const status =
+  document.getElementById("status");
+
+  if(!message){
+
+    status.classList.remove("show");
+
+    status.innerText = "";
+
+    return;
+
+  }
+
+  status.innerText = message;
+
+  status.classList.add("show");
 
 }
 
 
 function closeModals(){
 
-document.querySelectorAll(".modal")
-.forEach(
-modal=>modal.classList.remove("show")
-);
+  document.querySelectorAll(".modal")
+  .forEach(
+    modal =>
+    modal.classList.remove("show")
+  );
 
 }
+
+
+window.addEventListener(
+"resize",
+function(){
+
+  if(
+    signaturePad &&
+    document.getElementById(
+      "signModal"
+    ).classList.contains("show")
+  ){
+
+    // Keep signature modal usable on mobile.
+  }
+
+}
+);
 
 </script>
 
 </body>
-  </html>
+</html>
