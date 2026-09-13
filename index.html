@@ -2,419 +2,503 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>PDFix - PDF Editor</title>
 
+<!-- PDF.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+
+<!-- PDF-LIB -->
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+<!-- Signature Pad -->
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
 
 <style>
 *{
- box-sizing:border-box;
- margin:0;
- padding:0;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
 body{
- font-family:Arial,Helvetica,sans-serif;
- background:#f4f6f9;
- color:#172033;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f5f7fb;
+    color:#172033;
 }
 
 header{
- height:64px;
- background:#fff;
- border-bottom:1px solid #e5e7eb;
- display:flex;
- align-items:center;
- justify-content:space-between;
- padding:0 22px;
- position:sticky;
- top:0;
- z-index:50;
+    height:70px;
+    background:#111827;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 22px;
+    position:sticky;
+    top:0;
+    z-index:1000;
 }
 
 .logo{
- font-size:25px;
- font-weight:800;
- color:#2563eb;
+    font-size:25px;
+    font-weight:800;
 }
 
 .logo span{
- color:#111827;
+    color:#38bdf8;
 }
 
 .header-right{
- display:flex;
- gap:10px;
-}
-
-button{
- border:0;
- border-radius:9px;
- padding:10px 15px;
- cursor:pointer;
- font-weight:600;
-}
-
-.primary{
- background:#2563eb;
- color:#fff;
-}
-
-.secondary{
- background:#eef2ff;
- color:#1e40af;
-}
-
-.danger{
- background:#fee2e2;
- color:#b91c1c;
+    font-size:13px;
+    color:#cbd5e1;
 }
 
 .hero{
- max-width:1150px;
- margin:35px auto 20px;
- padding:0 18px;
- text-align:center;
+    text-align:center;
+    padding:45px 20px 25px;
 }
 
 .hero h1{
- font-size:40px;
- margin-bottom:10px;
+    font-size:38px;
+    margin-bottom:10px;
 }
 
 .hero p{
- color:#667085;
- font-size:16px;
+    color:#64748b;
 }
 
 .upload-box{
- max-width:850px;
- margin:25px auto;
- background:#fff;
- border:2px dashed #b8c2d1;
- border-radius:18px;
- padding:38px 20px;
- text-align:center;
- transition:.2s;
+    max-width:850px;
+    margin:20px auto 35px;
+    padding:45px 20px;
+    border:2px dashed #94a3b8;
+    border-radius:20px;
+    background:white;
+    text-align:center;
+    cursor:pointer;
+    transition:.2s;
 }
 
 .upload-box:hover{
- border-color:#2563eb;
+    border-color:#0ea5e9;
+    background:#f8fdff;
+}
+
+.upload-icon{
+    font-size:50px;
+    margin-bottom:12px;
 }
 
 .upload-box h2{
- margin-bottom:8px;
+    margin-bottom:8px;
 }
 
 .upload-box p{
- color:#667085;
- margin-bottom:18px;
+    color:#64748b;
 }
 
 #pdfInput{
- display:none;
-}
-
-.tools{
- max-width:1150px;
- margin:25px auto;
- padding:0 18px;
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:14px;
-}
-
-.tool{
- background:#fff;
- border:1px solid #e5e7eb;
- border-radius:14px;
- padding:18px;
- cursor:pointer;
- transition:.2s;
-}
-
-.tool:hover{
- transform:translateY(-2px);
- box-shadow:0 8px 25px rgba(0,0,0,.07);
-}
-
-.tool-icon{
- font-size:27px;
- margin-bottom:8px;
-}
-
-.tool h3{
- font-size:16px;
- margin-bottom:5px;
-}
-
-.tool p{
- font-size:13px;
- color:#667085;
-}
-
-.workspace{
- display:none;
- max-width:1400px;
- margin:20px auto;
- padding:0 15px 40px;
-}
-
-.editor{
- background:#fff;
- border:1px solid #e5e7eb;
- border-radius:15px;
- overflow:hidden;
-}
-
-.toolbar{
- min-height:58px;
- border-bottom:1px solid #e5e7eb;
- display:flex;
- align-items:center;
- gap:7px;
- padding:8px;
- flex-wrap:wrap;
- background:#fff;
-}
-
-.toolbar button{
- background:#f3f4f6;
- color:#1f2937;
-}
-
-.toolbar button:hover{
- background:#e5e7eb;
-}
-
-.toolbar select,
-.toolbar input{
- height:38px;
- border:1px solid #d1d5db;
- border-radius:7px;
- padding:0 8px;
-}
-
-.editor-area{
- display:flex;
- min-height:650px;
- background:#e9edf3;
-}
-
-.sidebar{
- width:150px;
- background:#f8fafc;
- border-right:1px solid #dfe3e8;
- padding:10px;
- overflow-y:auto;
-}
-
-.thumb{
- background:#fff;
- margin-bottom:12px;
- padding:5px;
- border:2px solid transparent;
- border-radius:6px;
- cursor:pointer;
-}
-
-.thumb.active{
- border-color:#2563eb;
-}
-
-.thumb canvas{
- width:100%;
- display:block;
-}
-
-.page-info{
- font-size:12px;
- text-align:center;
- margin-top:4px;
- color:#667085;
-}
-
-.canvas-wrap{
- flex:1;
- overflow:auto;
- padding:30px;
- text-align:center;
-}
-
-.page{
- position:relative;
- background:white;
- margin:0 auto 25px;
- box-shadow:0 5px 25px rgba(0,0,0,.15);
- display:inline-block;
- text-align:left;
-}
-
-.page canvas{
- display:block;
-}
-
-.text-layer{
- position:absolute;
- left:0;
- top:0;
- right:0;
- bottom:0;
- pointer-events:none;
-}
-
-.edit-text{
- position:absolute;
- pointer-events:auto;
- cursor:text;
- white-space:pre;
- overflow:visible;
- border:1px solid transparent;
- padding:1px;
-}
-
-.edit-text:hover{
- border:1px dashed #2563eb;
-}
-
-.edit-text.selected{
- border:1px solid #2563eb;
- background:rgba(37,99,235,.04);
+    display:none;
 }
 
 .status{
- padding:8px 12px;
- font-size:13px;
- color:#667085;
- border-top:1px solid #e5e7eb;
- background:#fff;
+    max-width:850px;
+    margin:0 auto 20px;
+    padding:13px 17px;
+    border-radius:10px;
+    background:#e0f2fe;
+    color:#075985;
+    display:none;
 }
 
+.status.error{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.status.success{
+    background:#dcfce7;
+    color:#166534;
+}
+
+/* TOOLS */
+
+.tools{
+    max-width:1100px;
+    margin:auto;
+    padding:0 18px 35px;
+}
+
+.tools-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.tool{
+    background:white;
+    padding:20px;
+    border-radius:16px;
+    border:1px solid #e5e7eb;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.tool:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 25px rgba(0,0,0,.07);
+}
+
+.tool .icon{
+    font-size:28px;
+    margin-bottom:8px;
+}
+
+.tool h3{
+    font-size:16px;
+    margin-bottom:5px;
+}
+
+.tool p{
+    font-size:12px;
+    color:#64748b;
+}
+
+/* WORKSPACE */
+
+.workspace{
+    display:none;
+    max-width:1250px;
+    margin:20px auto 60px;
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    overflow:hidden;
+}
+
+.workspace-top{
+    padding:13px 15px;
+    border-bottom:1px solid #e5e7eb;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+button,
+select,
+input[type="color"]{
+    border:1px solid #d1d5db;
+    background:white;
+    border-radius:8px;
+    padding:8px 11px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#f1f5f9;
+}
+
+.primary{
+    background:#0ea5e9;
+    color:white;
+    border-color:#0ea5e9;
+}
+
+.primary:hover{
+    background:#0284c7;
+}
+
+.danger{
+    background:#fee2e2;
+    color:#991b1b;
+    border-color:#fecaca;
+}
+
+.divider{
+    width:1px;
+    height:28px;
+    background:#e5e7eb;
+    margin:0 3px;
+}
+
+.editor-area{
+    display:flex;
+    min-height:650px;
+    background:#e2e8f0;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:180px;
+    background:#f8fafc;
+    border-right:1px solid #dbe2ea;
+    padding:12px;
+    overflow-y:auto;
+}
+
+.sidebar-title{
+    font-weight:700;
+    margin-bottom:10px;
+    font-size:14px;
+}
+
+.thumbnail{
+    background:white;
+    margin-bottom:10px;
+    padding:5px;
+    border:2px solid transparent;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.thumbnail.active{
+    border-color:#0ea5e9;
+}
+
+.thumbnail canvas{
+    width:100%;
+    display:block;
+}
+
+/* PDF AREA */
+
+.pdf-container{
+    flex:1;
+    padding:30px;
+    overflow:auto;
+    text-align:center;
+}
+
+.page-wrapper{
+    position:relative;
+    display:inline-block;
+    margin:0 auto 30px;
+    background:white;
+    box-shadow:0 5px 25px rgba(0,0,0,.18);
+}
+
+.pdf-canvas{
+    display:block;
+}
+
+.text-layer{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+}
+
+.text-item{
+    position:absolute;
+    pointer-events:auto;
+    color:transparent;
+    background:transparent;
+    white-space:pre;
+    cursor:text;
+    border:1px solid transparent;
+}
+
+.text-item:hover{
+    border-color:#38bdf8;
+}
+
+.text-item.selected{
+    border:2px solid #0ea5e9;
+    background:rgba(14,165,233,.08);
+}
+
+.text-item .resize-handle{
+    position:absolute;
+    right:-6px;
+    bottom:-6px;
+    width:12px;
+    height:12px;
+    background:#0ea5e9;
+    border-radius:3px;
+    cursor:nwse-resize;
+    display:none;
+}
+
+.text-item.selected .resize-handle{
+    display:block;
+}
+
+.added-text{
+    position:absolute;
+    color:#111827;
+    background:transparent;
+    white-space:nowrap;
+    cursor:move;
+    border:1px dashed transparent;
+    pointer-events:auto;
+}
+
+.added-text.selected{
+    border:1px dashed #0ea5e9;
+}
+
+.signature{
+    position:absolute;
+    cursor:move;
+    border:1px dashed transparent;
+}
+
+.signature.selected{
+    border-color:#0ea5e9;
+}
+
+/* BOTTOM */
+
+.page-controls{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:12px;
+    border-top:1px solid #e5e7eb;
+    background:white;
+}
+
+#pageInfo{
+    min-width:100px;
+    text-align:center;
+    font-size:14px;
+}
+
+/* MODAL */
+
 .modal{
- display:none;
- position:fixed;
- inset:0;
- background:rgba(0,0,0,.55);
- z-index:100;
- align-items:center;
- justify-content:center;
- padding:15px;
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.65);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:3000;
+    padding:20px;
 }
 
 .modal-box{
- background:#fff;
- width:min(550px,100%);
- border-radius:16px;
- padding:20px;
+    background:white;
+    width:min(650px,100%);
+    border-radius:18px;
+    padding:22px;
+    max-height:90vh;
+    overflow:auto;
 }
 
 .modal-box h2{
- margin-bottom:15px;
-}
-
-.modal-box textarea,
-.modal-box input,
-.modal-box select{
- width:100%;
- padding:11px;
- border:1px solid #d1d5db;
- border-radius:8px;
- margin-bottom:12px;
+    margin-bottom:15px;
 }
 
 .modal-actions{
- display:flex;
- justify-content:flex-end;
- gap:8px;
-}
-
-.signature-area{
- border:1px solid #d1d5db;
- border-radius:8px;
- overflow:hidden;
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:15px;
 }
 
 #signatureCanvas{
- width:100%;
- height:220px;
- display:block;
- touch-action:none;
+    width:100%;
+    height:250px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    touch-action:none;
 }
+
+/* FOOTER */
 
 footer{
- text-align:center;
- padding:30px;
- color:#667085;
+    text-align:center;
+    padding:30px 20px;
+    color:#64748b;
 }
 
+/* MOBILE */
+
 @media(max-width:900px){
- .tools{
-  grid-template-columns:repeat(2,1fr);
- }
 
- .sidebar{
-  width:95px;
- }
+    .tools-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
 
- .canvas-wrap{
-  padding:15px;
- }
+    .sidebar{
+        width:100px;
+    }
 
- .hero h1{
-  font-size:31px;
- }
+    .pdf-container{
+        padding:15px;
+    }
+
 }
 
 @media(max-width:600px){
- header{
-  padding:0 12px;
- }
 
- .logo{
-  font-size:21px;
- }
+    header{
+        height:60px;
+        padding:0 15px;
+    }
 
- .header-right button{
-  padding:8px;
-  font-size:12px;
- }
+    .logo{
+        font-size:21px;
+    }
 
- .tools{
-  grid-template-columns:1fr 1fr;
-  padding:0 10px;
- }
+    .header-right{
+        display:none;
+    }
 
- .tool{
-  padding:13px;
- }
+    .hero{
+        padding:30px 15px 20px;
+    }
 
- .editor-area{
-  min-height:550px;
- }
+    .hero h1{
+        font-size:29px;
+    }
 
- .sidebar{
-  width:75px;
- }
+    .upload-box{
+        margin:15px;
+        padding:35px 15px;
+    }
 
- .canvas-wrap{
-  padding:10px;
- }
+    .tools{
+        padding:0 15px 25px;
+    }
 
- .toolbar{
-  gap:5px;
- }
+    .tools-grid{
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+    }
 
- .toolbar button{
-  padding:8px 9px;
- }
+    .tool{
+        padding:15px;
+    }
 
- .toolbar select{
-  max-width:90px;
- }
+    .editor-area{
+        min-height:550px;
+    }
+
+    .sidebar{
+        width:75px;
+        padding:7px;
+    }
+
+    .pdf-container{
+        padding:10px;
+    }
+
+    .workspace-top{
+        gap:5px;
+    }
+
+    .workspace-top button,
+    .workspace-top select{
+        font-size:12px;
+        padding:7px;
+    }
+
 }
 </style>
 </head>
@@ -422,1708 +506,2187 @@ footer{
 <body>
 
 <header>
- <div class="logo">PDF<span>ix</span></div>
-
- <div class="header-right">
-  <button class="secondary" onclick="newPDF()">New</button>
-  <button class="primary" onclick="downloadPDF()">Download</button>
- </div>
+    <div class="logo">PDF<span>ix</span></div>
+    <div class="header-right">Professional PDF Tools</div>
 </header>
 
 <section class="hero">
- <h1>Edit PDF Like a Pro</h1>
- <p>Edit text, add text, sign, merge, split and manage your PDF.</p>
+    <h1>Edit PDFs Easily</h1>
+    <p>Upload, edit, sign, merge, split and download your PDF.</p>
 </section>
 
-<section class="upload-box">
- <h2>Upload your PDF</h2>
- <p>Select a PDF and start editing.</p>
+<div class="upload-box" onclick="document.getElementById('pdfInput').click()">
 
- <input id="pdfInput" type="file" accept="application/pdf">
+    <div class="upload-icon">📄</div>
 
- <button class="primary"
- onclick="document.getElementById('pdfInput').click()">
- Choose PDF
- </button>
-</section>
+    <h2>Upload PDF</h2>
+
+    <p>Click here or choose a PDF file</p>
+
+    <input
+        type="file"
+        id="pdfInput"
+        accept="application/pdf,.pdf"
+    >
+
+</div>
+
+<div id="status" class="status"></div>
 
 <section class="tools">
 
- <div class="tool" onclick="document.getElementById('pdfInput').click()">
-  <div class="tool-icon">📄</div>
-  <h3>Edit PDF</h3>
-  <p>Edit detected PDF text.</p>
- </div>
+    <div class="tools-grid">
 
- <div class="tool" onclick="addText()">
-  <div class="tool-icon">✏️</div>
-  <h3>Add Text</h3>
-  <p>Add new text to the page.</p>
- </div>
+        <div class="tool" onclick="triggerUpload()">
+            <div class="icon">📤</div>
+            <h3>Upload PDF</h3>
+            <p>Open a PDF</p>
+        </div>
 
- <div class="tool" onclick="openSignature()">
-  <div class="tool-icon">✍️</div>
-  <h3>Fill & Sign</h3>
-  <p>Draw your signature.</p>
- </div>
+        <div class="tool" onclick="addText()">
+            <div class="icon">✏️</div>
+            <h3>Add Text</h3>
+            <p>Add editable text</p>
+        </div>
 
- <div class="tool" onclick="mergePDF()">
-  <div class="tool-icon">📚</div>
-  <h3>Merge PDF</h3>
-  <p>Combine multiple PDFs.</p>
- </div>
+        <div class="tool" onclick="openSignature()">
+            <div class="icon">✍️</div>
+            <h3>Fill & Sign</h3>
+            <p>Add your signature</p>
+        </div>
 
- <div class="tool" onclick="splitPDF()">
-  <div class="tool-icon">✂️</div>
-  <h3>Split PDF</h3>
-  <p>Extract selected page.</p>
- </div>
+        <div class="tool" onclick="openMerge()">
+            <div class="icon">📎</div>
+            <h3>Merge PDF</h3>
+            <p>Combine PDFs</p>
+        </div>
 
- <div class="tool" onclick="rotatePDF()">
-  <div class="tool-icon">🔄</div>
-  <h3>Rotate</h3>
-  <p>Rotate PDF pages.</p>
- </div>
+        <div class="tool" onclick="splitPDF()">
+            <div class="icon">✂️</div>
+            <h3>Split PDF</h3>
+            <p>Extract current page</p>
+        </div>
 
- <div class="tool" onclick="zoomIn()">
-  <div class="tool-icon">🔍</div>
-  <h3>Zoom In</h3>
-  <p>Increase editor zoom.</p>
- </div>
+        <div class="tool" onclick="rotatePDF()">
+            <div class="icon">🔄</div>
+            <h3>Rotate</h3>
+            <p>Rotate PDF pages</p>
+        </div>
 
- <div class="tool" onclick="zoomOut()">
-  <div class="tool-icon">🔎</div>
-  <h3>Zoom Out</h3>
-  <p>Decrease editor zoom.</p>
- </div>
+        <div class="tool" onclick="zoomIn()">
+            <div class="icon">🔍</div>
+            <h3>Zoom In</h3>
+            <p>Increase preview</p>
+        </div>
+
+        <div class="tool" onclick="downloadPDF()">
+            <div class="icon">⬇️</div>
+            <h3>Download</h3>
+            <p>Save edited PDF</p>
+        </div>
+
+    </div>
 
 </section>
 
 <section class="workspace" id="workspace">
 
- <div class="editor">
+    <div class="workspace-top">
 
-  <div class="toolbar">
+        <button onclick="addText()">＋ Text</button>
 
-   <button onclick="addText()">＋ Text</button>
+        <button onclick="openSignature()">✍ Signature</button>
 
-   <button onclick="editSelected()">Edit</button>
+        <div class="divider"></div>
 
-   <button onclick="deleteSelected()" class="danger">🗑 Delete</button>
+        <select id="fontSize" onchange="updateSelectedText()">
+            <option value="10">10</option>
+            <option value="12" selected>12</option>
+            <option value="14">14</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+            <option value="20">20</option>
+            <option value="24">24</option>
+            <option value="30">30</option>
+            <option value="36">36</option>
+        </select>
 
-   <select id="fontSize">
-    <option value="10">10</option>
-    <option value="12" selected>12</option>
-    <option value="14">14</option>
-    <option value="16">16</option>
-    <option value="18">18</option>
-    <option value="20">20</option>
-    <option value="24">24</option>
-    <option value="30">30</option>
-   </select>
+        <input
+            type="color"
+            id="fontColor"
+            value="#111111"
+            onchange="updateSelectedText()"
+        >
 
-   <input type="color" id="fontColor" value="#111111">
+        <button onclick="toggleBold()">B</button>
 
-   <button onclick="setAlign('left')">L</button>
-   <button onclick="setAlign('center')">C</button>
-   <button onclick="setAlign('right')">R</button>
+        <button onclick="alignText('left')">L</button>
+        <button onclick="alignText('center')">C</button>
+        <button onclick="alignText('right')">R</button>
 
-   <button onclick="toggleBold()">B</button>
+        <button class="danger" onclick="deleteSelected()">🗑</button>
 
-   <button onclick="zoomOut()">−</button>
-   <button onclick="zoomIn()">＋</button>
+        <div class="divider"></div>
 
-   <button onclick="previousPage()">←</button>
-   <span id="pageCounter">1 / 1</span>
-   <button onclick="nextPage()">→</button>
+        <button onclick="zoomOut()">−</button>
+        <button onclick="resetZoom()">100%</button>
+        <button onclick="zoomIn()">＋</button>
 
-   <button class="primary" onclick="downloadPDF()">Download</button>
+        <div class="divider"></div>
 
-  </div>
+        <button onclick="undoAction()">↶ Undo</button>
 
-  <div class="editor-area">
+        <button
+            class="primary"
+            onclick="downloadPDF()"
+        >
+            ⬇ Download PDF
+        </button>
 
-   <aside class="sidebar" id="sidebar"></aside>
+    </div>
 
-   <main class="canvas-wrap" id="canvasWrap"></main>
+    <div class="editor-area">
 
-  </div>
+        <aside class="sidebar">
 
-  <div class="status" id="status">
-   Upload a PDF to start.
-  </div>
+            <div class="sidebar-title">Pages</div>
 
- </div>
+            <div id="thumbnails"></div>
+
+        </aside>
+
+        <main class="pdf-container" id="pdfContainer">
+
+            <div id="pages"></div>
+
+        </main>
+
+    </div>
+
+    <div class="page-controls">
+
+        <button onclick="previousPage()">←</button>
+
+        <span id="pageInfo">Page 1 / 1</span>
+
+        <button onclick="nextPage()">→</button>
+
+    </div>
 
 </section>
 
 <footer>
- PDFix — Professional PDF Tools
+    © 2026 PDFix — PDF Tools
 </footer>
-
-
-<!-- EDIT MODAL -->
-
-<div class="modal" id="editModal">
-
- <div class="modal-box">
-
-  <h2>Edit Text</h2>
-
-  <textarea id="editValue" rows="5"></textarea>
-
-  <div class="modal-actions">
-   <button onclick="closeModal('editModal')">Cancel</button>
-   <button class="primary" onclick="saveTextEdit()">Apply</button>
-  </div>
-
- </div>
-
-</div>
 
 
 <!-- SIGNATURE MODAL -->
 
 <div class="modal" id="signatureModal">
 
- <div class="modal-box">
+    <div class="modal-box">
 
-  <h2>Draw Signature</h2>
+        <h2>Add Signature</h2>
 
-  <div class="signature-area">
-   <canvas id="signatureCanvas"></canvas>
-  </div>
+        <canvas id="signatureCanvas"></canvas>
 
-  <br>
+        <div class="modal-actions">
 
-  <button onclick="clearSignature()">Clear</button>
+            <button onclick="clearSignature()">
+                Clear
+            </button>
 
-  <div class="modal-actions">
+            <button onclick="closeSignature()">
+                Cancel
+            </button>
 
-   <button onclick="closeModal('signatureModal')">
-    Cancel
-   </button>
+            <button
+                class="primary"
+                onclick="saveSignature()"
+            >
+                Add Signature
+            </button>
 
-   <button class="primary" onclick="useSignature()">
-    Use Signature
-   </button>
+        </div>
 
-  </div>
+    </div>
 
- </div>
+</div>
+
+
+<!-- MERGE MODAL -->
+
+<div class="modal" id="mergeModal">
+
+    <div class="modal-box">
+
+        <h2>Merge PDF</h2>
+
+        <p style="color:#64748b;margin-bottom:15px;">
+            Select multiple PDF files.
+        </p>
+
+        <input
+            type="file"
+            id="mergeInput"
+            accept="application/pdf,.pdf"
+            multiple
+        >
+
+        <div class="modal-actions">
+
+            <button onclick="closeMerge()">
+                Cancel
+            </button>
+
+            <button
+                class="primary"
+                onclick="mergePDFs()"
+            >
+                Merge & Download
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 
 
 <script>
 
+/* =========================================================
+   PDF.JS SETUP
+========================================================= */
+
+const pdfjsLib = window['pdfjs-dist/build/pdf'];
+
 pdfjsLib.GlobalWorkerOptions.workerSrc =
- "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
 
-let originalBytes = null;
-let pdfDocument = null;
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
 
-let pages = [];
+let pdfDoc = null;
+
+let originalPdfBytes = null;
+
 let currentPage = 1;
 
-let zoom = 1.2;
+let totalPages = 0;
+
+let zoom = 1.25;
+
+let currentPdfFile = null;
 
 let selectedObject = null;
+
+let objects = [];
+
+let history = [];
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function showStatus(message, type = "normal"){
+
+    const box = document.getElementById("status");
+
+    box.style.display = "block";
+
+    box.className = "status";
+
+    if(type === "error"){
+        box.classList.add("error");
+    }
+
+    if(type === "success"){
+        box.classList.add("success");
+    }
+
+    box.textContent = message;
+
+}
+
+
+/* =========================================================
+   UPLOAD
+========================================================= */
+
+function triggerUpload(){
+
+    document.getElementById("pdfInput").click();
+
+}
+
+
+document
+.getElementById("pdfInput")
+.addEventListener("change", function(){
+
+    const file = this.files[0];
+
+    if(!file){
+        return;
+    }
+
+    loadPDF(file);
+
+});
+
+
+/* =========================================================
+   LOAD PDF
+========================================================= */
+
+async function loadPDF(file){
+
+    try{
+
+        if(
+            file.type !== "application/pdf" &&
+            !file.name.toLowerCase().endsWith(".pdf")
+        ){
+
+            showStatus(
+                "Please select a valid PDF file.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        showStatus(
+            "Opening PDF...",
+            "normal"
+        );
+
+
+        currentPdfFile = file;
+
+
+        /*
+         IMPORTANT:
+         Convert File directly into ArrayBuffer.
+         Then copy into Uint8Array.
+        */
+
+        const arrayBuffer = await file.arrayBuffer();
+
+        if(!arrayBuffer || arrayBuffer.byteLength === 0){
+
+            throw new Error(
+                "The PDF file is empty."
+            );
+
+        }
+
+
+        originalPdfBytes =
+            new Uint8Array(arrayBuffer);
+
+
+        /*
+         Create a fresh copy for PDF.js.
+         */
+
+        const pdfData =
+            new Uint8Array(originalPdfBytes);
+
+
+        /*
+         PDF.js loading
+        */
+
+        const loadingTask =
+            pdfjsLib.getDocument({
+                data: pdfData,
+                useWorkerFetch: true,
+                isEvalSupported: true,
+                disableAutoFetch: false,
+                disableStream: false
+            });
+
+
+        pdfDoc = await loadingTask.promise;
+
+
+        totalPages = pdfDoc.numPages;
+
+        currentPage = 1;
+
+        objects = [];
+
+        history = [];
+
+        selectedObject = null;
+
+
+        document
+        .getElementById("workspace")
+        .style.display = "block";
+
+
+        showStatus(
+            "PDF opened successfully.",
+            "success"
+        );
+
+
+        await renderAllPages();
+
+        await createThumbnails();
+
+        updatePageInfo();
+
+
+    }catch(error){
+
+        console.error(
+            "PDF OPEN ERROR:",
+            error
+        );
+
+
+        let message =
+            "PDF could not be opened.";
+
+
+        if(
+            error &&
+            error.name === "PasswordException"
+        ){
+
+            message =
+                "This PDF is password protected. Please use an unlocked PDF.";
+
+        }else if(
+            error &&
+            error.name === "InvalidPDFException"
+        ){
+
+            message =
+                "This PDF appears to be invalid or corrupted.";
+
+        }else if(
+            error &&
+            error.message
+        ){
+
+            message =
+                "PDF could not be opened: " +
+                error.message;
+
+        }
+
+
+        showStatus(
+            message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER ALL PAGES
+========================================================= */
+
+async function renderAllPages(){
+
+    const pages =
+        document.getElementById("pages");
+
+    pages.innerHTML = "";
+
+
+    for(
+        let pageNumber = 1;
+        pageNumber <= totalPages;
+        pageNumber++
+    ){
+
+        await renderPage(pageNumber);
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER PAGE
+========================================================= */
+
+async function renderPage(pageNumber){
+
+    const page =
+        await pdfDoc.getPage(pageNumber);
+
+
+    const viewport =
+        page.getViewport({
+            scale: zoom
+        });
+
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "page-wrapper";
+
+    wrapper.dataset.page =
+        pageNumber;
+
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.className =
+        "pdf-canvas";
+
+    canvas.width =
+        viewport.width;
+
+    canvas.height =
+        viewport.height;
+
+
+    const context =
+        canvas.getContext("2d");
+
+
+    wrapper.appendChild(canvas);
+
+
+    const textLayer =
+        document.createElement("div");
+
+    textLayer.className =
+        "text-layer";
+
+
+    wrapper.appendChild(textLayer);
+
+
+    document
+    .getElementById("pages")
+    .appendChild(wrapper);
+
+
+    await page.render({
+        canvasContext: context,
+        viewport: viewport
+    }).promise;
+
+
+    /*
+     Get existing PDF text.
+    */
+
+    try{
+
+        const textContent =
+            await page.getTextContent();
+
+
+        textContent.items.forEach(
+            (item, index) => {
+
+                if(!item.str){
+                    return;
+                }
+
+
+                const tx =
+                    pdfjsLib.Util.transform(
+                        viewport.transform,
+                        item.transform
+                    );
+
+
+                const x =
+                    tx[4];
+
+                const y =
+                    tx[5];
+
+
+                const height =
+                    Math.abs(
+                        item.height *
+                        zoom
+                    );
+
+
+                const width =
+                    Math.max(
+                        item.width * zoom,
+                        5
+                    );
+
+
+                const text =
+                    document.createElement("div");
+
+
+                text.className =
+                    "text-item";
+
+
+                text.textContent =
+                    item.str;
+
+
+                text.style.left =
+                    x + "px";
+
+
+                text.style.top =
+                    (y - height) + "px";
+
+
+                text.style.width =
+                    width + "px";
+
+
+                text.style.height =
+                    height + "px";
+
+
+                text.dataset.page =
+                    pageNumber;
+
+
+                text.dataset.index =
+                    index;
+
+
+                text.addEventListener(
+                    "click",
+                    function(event){
+
+                        event.stopPropagation();
+
+                        selectObject(this);
+
+                    }
+                );
+
+
+                text.addEventListener(
+                    "dblclick",
+                    function(event){
+
+                        event.stopPropagation();
+
+                        editExistingText(this);
+
+                    }
+                );
+
+
+                textLayer.appendChild(text);
+
+            }
+        );
+
+    }catch(e){
+
+        console.warn(
+            "Text layer unavailable:",
+            e
+        );
+
+    }
+
+
+    /*
+     Restore added objects for this page.
+    */
+
+    restoreObjects(
+        wrapper,
+        pageNumber
+    );
+
+}
+
+
+/* =========================================================
+   THUMBNAILS
+========================================================= */
+
+async function createThumbnails(){
+
+    const container =
+        document.getElementById(
+            "thumbnails"
+        );
+
+    container.innerHTML = "";
+
+
+    for(
+        let i = 1;
+        i <= totalPages;
+        i++
+    ){
+
+        try{
+
+            const page =
+                await pdfDoc.getPage(i);
+
+
+            const viewport =
+                page.getViewport({
+                    scale:.18
+                });
+
+
+            const thumb =
+                document.createElement("div");
+
+
+            thumb.className =
+                "thumbnail";
+
+
+            if(i === currentPage){
+                thumb.classList.add("active");
+            }
+
+
+            const canvas =
+                document.createElement("canvas");
+
+
+            canvas.width =
+                viewport.width;
+
+            canvas.height =
+                viewport.height;
+
+
+            const ctx =
+                canvas.getContext("2d");
+
+
+            thumb.appendChild(canvas);
+
+
+            thumb.onclick =
+                function(){
+
+                    currentPage = i;
+
+                    scrollToPage(i);
+
+                    updatePageInfo();
+
+                    updateThumbnailSelection();
+
+                };
+
+
+            container.appendChild(thumb);
+
+
+            await page.render({
+                canvasContext:ctx,
+                viewport:viewport
+            }).promise;
+
+        }catch(e){
+
+            console.warn(
+                "Thumbnail error:",
+                e
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   SCROLL PAGE
+========================================================= */
+
+function scrollToPage(pageNumber){
+
+    const page =
+        document.querySelector(
+            `.page-wrapper[data-page="${pageNumber}"]`
+        );
+
+
+    if(page){
+
+        page.scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
+
+    }
+
+}
+
+
+/* =========================================================
+   PAGE INFO
+========================================================= */
+
+function updatePageInfo(){
+
+    document.getElementById(
+        "pageInfo"
+    ).textContent =
+        `Page ${currentPage} / ${totalPages}`;
+
+}
+
+
+function updateThumbnailSelection(){
+
+    document
+    .querySelectorAll(".thumbnail")
+    .forEach(
+        (item,index) => {
+
+            item.classList.toggle(
+                "active",
+                index + 1 === currentPage
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   PAGE NAVIGATION
+========================================================= */
+
+function previousPage(){
+
+    if(currentPage > 1){
+
+        currentPage--;
+
+        scrollToPage(currentPage);
+
+        updatePageInfo();
+
+        updateThumbnailSelection();
+
+    }
+
+}
+
+
+function nextPage(){
+
+    if(currentPage < totalPages){
+
+        currentPage++;
+
+        scrollToPage(currentPage);
+
+        updatePageInfo();
+
+        updateThumbnailSelection();
+
+    }
+
+}
+
+
+/* =========================================================
+   SELECT OBJECT
+========================================================= */
+
+function selectObject(element){
+
+    document
+    .querySelectorAll(".text-item.selected,.added-text.selected,.signature.selected")
+    .forEach(
+        e => e.classList.remove("selected")
+    );
+
+
+    element.classList.add("selected");
+
+    selectedObject = element;
+
+
+    const size =
+        parseInt(
+            getComputedStyle(element).fontSize
+        );
+
+
+    if(size){
+
+        document.getElementById(
+            "fontSize"
+        ).value = size;
+
+    }
+
+}
+
+
+/* =========================================================
+   EDIT EXISTING TEXT
+========================================================= */
+
+function editExistingText(element){
+
+    const oldText =
+        element.textContent;
+
+
+    const newText =
+        prompt(
+            "Edit PDF text:",
+            oldText
+        );
+
+
+    if(
+        newText === null ||
+        newText === oldText
+    ){
+
+        return;
+
+    }
+
+
+    saveHistory();
+
+
+    element.textContent =
+        newText;
+
+
+    element.dataset.edited =
+        "true";
+
+
+    selectObject(element);
+
+
+    showStatus(
+        "Text changed. Download the PDF to save it.",
+        "success"
+    );
+
+}
+
+
+/* =========================================================
+   ADD TEXT
+========================================================= */
+
+function addText(){
+
+    if(!pdfDoc){
+
+        showStatus(
+            "Please upload a PDF first.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const wrapper =
+        document.querySelector(
+            `.page-wrapper[data-page="${currentPage}"]`
+        );
+
+
+    if(!wrapper){
+        return;
+    }
+
+
+    saveHistory();
+
+
+    const text =
+        document.createElement("div");
+
+
+    text.className =
+        "added-text";
+
+
+    text.textContent =
+        "New Text";
+
+
+    text.style.left =
+        "50px";
+
+
+    text.style.top =
+        "50px";
+
+
+    text.style.fontSize =
+        "12px";
+
+
+    text.style.color =
+        "#111111";
+
+
+    text.dataset.page =
+        currentPage;
+
+
+    wrapper.appendChild(text);
+
+
+    makeDraggable(text);
+
+    selectObject(text);
+
+}
+
+
+/* =========================================================
+   UPDATE TEXT
+========================================================= */
+
+function updateSelectedText(){
+
+    if(!selectedObject){
+        return;
+    }
+
+
+    const size =
+        document.getElementById(
+            "fontSize"
+        ).value;
+
+
+    const color =
+        document.getElementById(
+            "fontColor"
+        ).value;
+
+
+    selectedObject.style.fontSize =
+        size + "px";
+
+
+    selectedObject.style.color =
+        color;
+
+}
+
+
+/* =========================================================
+   BOLD
+========================================================= */
+
+function toggleBold(){
+
+    if(!selectedObject){
+        return;
+    }
+
+
+    if(
+        selectedObject.style.fontWeight ===
+        "700"
+    ){
+
+        selectedObject.style.fontWeight =
+            "400";
+
+    }else{
+
+        selectedObject.style.fontWeight =
+            "700";
+
+    }
+
+}
+
+
+/* =========================================================
+   ALIGN
+========================================================= */
+
+function alignText(value){
+
+    if(!selectedObject){
+        return;
+    }
+
+    selectedObject.style.textAlign =
+        value;
+
+}
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+function deleteSelected(){
+
+    if(!selectedObject){
+        return;
+    }
+
+
+    saveHistory();
+
+
+    selectedObject.remove();
+
+    selectedObject = null;
+
+}
+
+
+/* =========================================================
+   DRAG
+========================================================= */
+
+function makeDraggable(element){
+
+    let startX = 0;
+    let startY = 0;
+    let startLeft = 0;
+    let startTop = 0;
+
+
+    element.addEventListener(
+        "pointerdown",
+        function(e){
+
+            e.stopPropagation();
+
+
+            selectObject(element);
+
+
+            startX = e.clientX;
+
+            startY = e.clientY;
+
+
+            startLeft =
+                parseFloat(
+                    element.style.left
+                ) || 0;
+
+
+            startTop =
+                parseFloat(
+                    element.style.top
+                ) || 0;
+
+
+            element.setPointerCapture(
+                e.pointerId
+            );
+
+
+            function move(ev){
+
+                const dx =
+                    ev.clientX - startX;
+
+
+                const dy =
+                    ev.clientY - startY;
+
+
+                element.style.left =
+                    startLeft + dx + "px";
+
+
+                element.style.top =
+                    startTop + dy + "px";
+
+            }
+
+
+            function up(){
+
+                element.removeEventListener(
+                    "pointermove",
+                    move
+                );
+
+                element.removeEventListener(
+                    "pointerup",
+                    up
+                );
+
+            }
+
+
+            element.addEventListener(
+                "pointermove",
+                move
+            );
+
+
+            element.addEventListener(
+                "pointerup",
+                up
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SIGNATURE
+========================================================= */
 
 let signaturePad = null;
 
 
-/*
------------------------------------
-FILE UPLOAD
------------------------------------
-*/
-
-document.getElementById("pdfInput")
-.addEventListener("change", async function(e){
-
- const file = e.target.files[0];
-
- if(!file) return;
-
- if(file.type !== "application/pdf"){
-  alert("Please select a PDF file.");
-  return;
- }
-
- setStatus("Loading PDF...");
-
- originalBytes =
-   new Uint8Array(await file.arrayBuffer());
-
- try{
-
-  pdfDocument =
-    await pdfjsLib.getDocument({
-      data:originalBytes
-    }).promise;
-
-  pages = [];
-
-  document.getElementById("workspace").style.display =
-    "block";
-
-  await renderAllPages();
-
-  setStatus(
-   "PDF loaded. Double-click detected text to edit."
-  );
-
- }catch(error){
-
-  console.error(error);
-
-  alert(
-   "PDF could not be opened. Please try another PDF."
-  );
-
-  setStatus("PDF loading failed.");
-
- }
-
-});
-
-
-/*
------------------------------------
-RENDER ALL PAGES
------------------------------------
-*/
-
-async function renderAllPages(){
-
- const wrap =
-   document.getElementById("canvasWrap");
-
- wrap.innerHTML="";
-
- const sidebar =
-   document.getElementById("sidebar");
-
- sidebar.innerHTML="";
-
- for(let i=1;i<=pdfDocument.numPages;i++){
-
-  const pdfPage =
-    await pdfDocument.getPage(i);
-
-  const viewport =
-    pdfPage.getViewport({
-      scale:zoom
-    });
-
-  const pageDiv =
-    document.createElement("div");
-
-  pageDiv.className="page";
-
-  pageDiv.dataset.page=i;
-
-  pageDiv.style.width =
-    viewport.width+"px";
-
-  pageDiv.style.height =
-    viewport.height+"px";
-
-
-  const canvas =
-    document.createElement("canvas");
-
-  canvas.width =
-    viewport.width;
-
-  canvas.height =
-    viewport.height;
-
-  pageDiv.appendChild(canvas);
-
-  const ctx =
-    canvas.getContext("2d");
-
-  await pdfPage.render({
-    canvasContext:ctx,
-    viewport:viewport
-  }).promise;
-
-
-  const textLayer =
-    document.createElement("div");
-
-  textLayer.className="text-layer";
-
-  pageDiv.appendChild(textLayer);
-
-  wrap.appendChild(pageDiv);
-
-
-  await detectText(
-    pdfPage,
-    textLayer,
-    viewport,
-    i
-  );
-
-
-  /*
-  THUMBNAIL
-  */
-
-  const thumb =
-    document.createElement("div");
-
-  thumb.className="thumb";
-
-  if(i===currentPage)
-    thumb.classList.add("active");
-
-  const tc =
-    document.createElement("canvas");
-
-  const tv =
-    pdfPage.getViewport({
-      scale:.18
-    });
-
-  tc.width=tv.width;
-  tc.height=tv.height;
-
-  await pdfPage.render({
-    canvasContext:tc.getContext("2d"),
-    viewport:tv
-  }).promise;
-
-  thumb.appendChild(tc);
-
-  const info =
-    document.createElement("div");
-
-  info.className="page-info";
-
-  info.textContent="Page "+i;
-
-  thumb.appendChild(info);
-
-  thumb.onclick=()=>{
-    currentPage=i;
-    scrollToPage(i);
-    updatePageUI();
-  };
-
-  sidebar.appendChild(thumb);
-
-
-  pages.push({
-    page:i,
-    div:pageDiv,
-    textLayer:textLayer,
-    objects:[]
-  });
-
- }
-
- updatePageUI();
-
-}
-
-
-/*
------------------------------------
-TEXT DETECTION
------------------------------------
-*/
-
-async function detectText(
- pdfPage,
- layer,
- viewport,
- pageNumber
-){
-
- const content =
-   await pdfPage.getTextContent();
-
- const pageData =
-   pages[pageNumber-1];
-
- content.items.forEach((item,index)=>{
-
-  if(!item.str || !item.str.trim())
-    return;
-
-
-  const tx =
-    pdfjsLib.Util.transform(
-      viewport.transform,
-      item.transform
-    );
-
-  const x=tx[4];
-
-  const y=
-    tx[5]-Math.abs(tx[3]);
-
-
-  const fontSize =
-    Math.max(
-      6,
-      Math.abs(tx[3])
-    );
-
-
-  const div =
-    document.createElement("div");
-
-  div.className="edit-text";
-
-  div.textContent=item.str;
-
-  div.style.left=x+"px";
-
-  div.style.top=y+"px";
-
-  div.style.fontSize=
-    fontSize+"px";
-
-  div.style.lineHeight=
-    fontSize*1.15+"px";
-
-  div.style.width=
-    Math.max(
-      item.width*zoom,
-      5
-    )+"px";
-
-
-  div.dataset.original=
-    item.str;
-
-  div.dataset.page=
-    pageNumber;
-
-  div.dataset.index=
-    index;
-
-
-  /*
-  SELECT
-  */
-
-  div.addEventListener(
-    "click",
-    function(e){
-
-      e.stopPropagation();
-
-      selectObject({
-        type:"existing",
-        element:div,
-        page:pageNumber,
-        original:item.str,
-        text:item.str,
-        x:x,
-        y:y,
-        fontSize:fontSize,
-        color:"#111111",
-        bold:false,
-        align:"left",
-        width:Math.max(item.width*zoom,5)
-      });
-
-    }
-  );
-
-
-  /*
-  DOUBLE CLICK EDIT
-  */
-
-  div.addEventListener(
-    "dblclick",
-    function(e){
-
-      e.stopPropagation();
-
-      selectObject({
-        type:"existing",
-        element:div,
-        page:pageNumber,
-        original:item.str,
-        text:item.str,
-        x:x,
-        y:y,
-        fontSize:fontSize,
-        color:"#111111",
-        bold:false,
-        align:"left",
-        width:Math.max(item.width*zoom,5)
-      });
-
-      openEdit();
-
-    }
-  );
-
-
-  layer.appendChild(div);
-
-
-  pageData.objects.push({
-    type:"existing",
-    element:div,
-    original:item.str,
-    text:item.str,
-    x:x,
-    y:y,
-    fontSize:fontSize
-  });
-
- });
-
-}
-
-
-/*
------------------------------------
-SELECT
------------------------------------
-*/
-
-function selectObject(obj){
-
- if(selectedObject &&
-    selectedObject.element){
-
-   selectedObject.element
-    .classList.remove("selected");
-
- }
-
- selectedObject=obj;
-
- if(obj.element)
-   obj.element.classList.add("selected");
-
-}
-
-
-/*
------------------------------------
-EDIT EXISTING TEXT
------------------------------------
-*/
-
-function editSelected(){
-
- if(!selectedObject){
-  alert("Select a text first.");
-  return;
- }
-
- openEdit();
-
-}
-
-
-function openEdit(){
-
- if(!selectedObject) return;
-
- document.getElementById("editValue")
-  .value=selectedObject.text || "";
-
- document.getElementById("editModal")
-  .style.display="flex";
-
-}
-
-
-function saveTextEdit(){
-
- if(!selectedObject) return;
-
- const value =
-   document.getElementById("editValue")
-   .value;
-
- selectedObject.text=value;
-
- if(selectedObject.element){
-
-  selectedObject.element.textContent=value;
-
- }
-
- closeModal("editModal");
-
- setStatus(
-   "Text changed. Download to create the edited PDF."
- );
-
-}
-
-
-/*
------------------------------------
-ADD TEXT
------------------------------------
-*/
-
-function addText(){
-
- if(!pdfDocument){
-  alert("Upload a PDF first.");
-  return;
- }
-
- const pageData =
-   pages[currentPage-1];
-
- const div =
-   document.createElement("div");
-
- div.className="edit-text selected";
-
- div.textContent="New Text";
-
- div.style.left="100px";
- div.style.top="100px";
-
- div.style.fontSize=
-   document.getElementById("fontSize").value+"px";
-
- div.style.color=
-   document.getElementById("fontColor").value;
-
- div.style.fontWeight="normal";
-
- div.style.minWidth="50px";
-
- pageData.textLayer.appendChild(div);
-
-
- const obj={
-  type:"new",
-  element:div,
-  page:currentPage,
-  text:"New Text",
-  x:100,
-  y:100,
-  fontSize:Number(
-    document.getElementById("fontSize").value
-  ),
-  color:
-    document.getElementById("fontColor").value,
-  bold:false,
-  align:"left"
- };
-
- pageData.objects.push(obj);
-
- selectObject(obj);
-
- makeDraggable(obj);
-
- setTimeout(()=>{
-   openEdit();
- },100);
-
-}
-
-
-/*
------------------------------------
-DRAG
------------------------------------
-*/
-
-function makeDraggable(obj){
-
- const el=obj.element;
-
- let startX=0;
- let startY=0;
-
- el.addEventListener(
-  "pointerdown",
-  function(e){
-
-   if(e.target!==el) return;
-
-   e.preventDefault();
-
-   startX=e.clientX;
-   startY=e.clientY;
-
-   const ox=obj.x;
-   const oy=obj.y;
-
-   function move(ev){
-
-    const dx=
-      ev.clientX-startX;
-
-    const dy=
-      ev.clientY-startY;
-
-    obj.x=ox+dx;
-    obj.y=oy+dy;
-
-    el.style.left=obj.x+"px";
-    el.style.top=obj.y+"px";
-
-   }
-
-   function up(){
-
-    document.removeEventListener(
-      "pointermove",
-      move
-    );
-
-    document.removeEventListener(
-      "pointerup",
-      up
-    );
-
-   }
-
-   document.addEventListener(
-     "pointermove",
-     move
-   );
-
-   document.addEventListener(
-     "pointerup",
-     up
-   );
-
-  }
- );
-
-}
-
-
-/*
------------------------------------
-DELETE
------------------------------------
-*/
-
-function deleteSelected(){
-
- if(!selectedObject){
-  alert("Select text first.");
-  return;
- }
-
- if(selectedObject.element)
-   selectedObject.element.remove();
-
- const data =
-   pages[selectedObject.page-1];
-
- data.objects =
-   data.objects.filter(
-    x=>x!==selectedObject
-   );
-
- selectedObject=null;
-
- setStatus("Selected object deleted.");
-
-}
-
-
-/*
------------------------------------
-FONT SIZE
------------------------------------
-*/
-
-document.getElementById("fontSize")
-.addEventListener("change",function(){
-
- if(!selectedObject) return;
-
- const size =
-   Number(this.value);
-
- selectedObject.fontSize=size;
-
- if(selectedObject.element)
-   selectedObject.element.style.fontSize=
-     size+"px";
-
-});
-
-
-/*
------------------------------------
-COLOR
------------------------------------
-*/
-
-document.getElementById("fontColor")
-.addEventListener("input",function(){
-
- if(!selectedObject) return;
-
- selectedObject.color=this.value;
-
- if(selectedObject.element)
-   selectedObject.element.style.color=
-     this.value;
-
-});
-
-
-/*
------------------------------------
-ALIGN
------------------------------------
-*/
-
-function setAlign(type){
-
- if(!selectedObject) return;
-
- selectedObject.align=type;
-
- if(selectedObject.element)
-   selectedObject.element.style.textAlign=
-     type;
-
-}
-
-
-/*
------------------------------------
-BOLD
------------------------------------
-*/
-
-function toggleBold(){
-
- if(!selectedObject) return;
-
- selectedObject.bold=
-   !selectedObject.bold;
-
- if(selectedObject.element){
-
-  selectedObject.element.style.fontWeight =
-    selectedObject.bold
-      ? "700"
-      : "normal";
-
- }
-
-}
-
-
-/*
------------------------------------
-SIGNATURE
------------------------------------
-*/
-
 function openSignature(){
 
- if(!pdfDocument){
-  alert("Upload a PDF first.");
-  return;
- }
+    if(!pdfDoc){
 
- document.getElementById(
-   "signatureModal"
- ).style.display="flex";
+        showStatus(
+            "Please upload a PDF first.",
+            "error"
+        );
+
+        return;
+
+    }
 
 
- const canvas =
-   document.getElementById(
-     "signatureCanvas"
-   );
+    const modal =
+        document.getElementById(
+            "signatureModal"
+        );
 
- canvas.width =
-   canvas.offsetWidth;
 
- canvas.height =
-   220;
+    modal.style.display =
+        "flex";
 
- if(signaturePad)
-   signaturePad.clear();
 
- signaturePad =
-   new SignaturePad(canvas,{
-     minWidth:.7,
-     maxWidth:2
-   });
+    setTimeout(
+        () => {
+
+            const canvas =
+                document.getElementById(
+                    "signatureCanvas"
+                );
+
+
+            canvas.width =
+                canvas.offsetWidth * 2;
+
+
+            canvas.height =
+                canvas.offsetHeight * 2;
+
+
+            signaturePad =
+                new SignaturePad(
+                    canvas,
+                    {
+                        backgroundColor:
+                            "rgba(255,255,255,0)"
+                    }
+                );
+
+        },
+        100
+    );
+
+}
+
+
+function closeSignature(){
+
+    document.getElementById(
+        "signatureModal"
+    ).style.display =
+        "none";
 
 }
 
 
 function clearSignature(){
 
- if(signaturePad)
-   signaturePad.clear();
+    if(signaturePad){
+
+        signaturePad.clear();
+
+    }
 
 }
 
 
-function useSignature(){
+function saveSignature(){
 
- if(!signaturePad ||
-    signaturePad.isEmpty()){
+    if(
+        !signaturePad ||
+        signaturePad.isEmpty()
+    ){
 
-   alert("Please draw your signature.");
-   return;
+        alert(
+            "Please draw your signature first."
+        );
 
- }
+        return;
 
- const data =
-   signaturePad.toDataURL();
+    }
 
- closeModal("signatureModal");
 
- addSignatureImage(data);
+    const data =
+        signaturePad.toDataURL(
+            "image/png"
+        );
+
+
+    const wrapper =
+        document.querySelector(
+            `.page-wrapper[data-page="${currentPage}"]`
+        );
+
+
+    if(!wrapper){
+        return;
+    }
+
+
+    saveHistory();
+
+
+    const img =
+        document.createElement("img");
+
+
+    img.src =
+        data;
+
+
+    img.className =
+        "signature";
+
+
+    img.style.left =
+        "60px";
+
+
+    img.style.top =
+        "100px";
+
+
+    img.style.width =
+        "180px";
+
+
+    img.style.height =
+        "80px";
+
+
+    img.dataset.page =
+        currentPage;
+
+
+    wrapper.appendChild(img);
+
+
+    makeDraggable(img);
+
+    selectObject(img);
+
+
+    closeSignature();
 
 }
 
 
-function addSignatureImage(data){
+/* =========================================================
+   RESTORE OBJECTS
+========================================================= */
 
- const pageData =
-   pages[currentPage-1];
+function restoreObjects(wrapper,page){
 
- const img =
-   document.createElement("img");
+    objects
+    .filter(
+        o => o.page === page
+    )
+    .forEach(
+        o => {
 
- img.src=data;
+            if(o.type === "text"){
 
- img.style.position="absolute";
- img.style.left="100px";
- img.style.top="100px";
- img.style.width="180px";
- img.style.cursor="move";
-
- pageData.textLayer.appendChild(img);
-
- const obj={
-  type:"signature",
-  element:img,
-  page:currentPage,
-  x:100,
-  y:100,
-  width:180,
-  height:90,
-  data:data
- };
-
- pageData.objects.push(obj);
-
- selectObject(obj);
-
- makeDraggable(obj);
-
-}
+                const el =
+                    document.createElement("div");
 
 
-/*
------------------------------------
-DOWNLOAD
------------------------------------
-*/
+                el.className =
+                    "added-text";
 
-async function downloadPDF(){
 
- if(!originalBytes){
-  alert("Upload a PDF first.");
-  return;
- }
+                el.textContent =
+                    o.text;
 
- setStatus("Creating edited PDF...");
 
- try{
+                el.style.left =
+                    o.left;
 
-  const pdf =
-    await PDFLib.PDFDocument.load(
-      originalBytes
+
+                el.style.top =
+                    o.top;
+
+
+                el.style.fontSize =
+                    o.fontSize;
+
+
+                el.style.color =
+                    o.color;
+
+
+                wrapper.appendChild(el);
+
+                makeDraggable(el);
+
+            }
+
+        }
     );
 
-  const pagesPDF =
-    pdf.getPages();
-
-
-  /*
-  IMPORTANT:
-  We redraw changed text directly
-  into the exported PDF page.
-  */
-
-  for(
-    let p=0;
-    p<pages.length;
-    p++
-  ){
-
-   const pageData=pages[p];
-
-   const pdfPage=
-     pagesPDF[p];
-
-   const pageWidth=
-     pdfPage.getWidth();
-
-   const pageHeight=
-     pdfPage.getHeight();
-
-
-   for(
-     const obj of pageData.objects
-   ){
-
-    if(obj.type==="existing"){
-
-     if(
-       obj.text===
-       obj.original
-     )
-       continue;
-
-
-     /*
-     Hide original region with
-     matching page background.
-
-     Then draw replacement.
-     */
-
-     const pdfX=
-       obj.x/zoom;
-
-     const pdfY=
-       pageHeight-
-       (obj.y/zoom)-
-       (obj.fontSize/zoom);
-
-
-     const width=
-       Math.max(
-         (obj.width || 100)/zoom,
-         20
-       );
-
-     const height=
-       (obj.fontSize/zoom)*1.5;
-
-
-     pageBackground(
-       pdfPage,
-       pdfX,
-       pdfY,
-       width,
-       height
-     );
-
-
-     const rgb=
-       hexToRgb(
-         obj.color || "#111111"
-       );
-
-
-     pdfPage.drawText(
-       obj.text,
-       {
-        x:pdfX,
-        y:pdfY,
-        size:obj.fontSize/zoom,
-        color:PDFLib.rgb(
-          rgb.r/255,
-          rgb.g/255,
-          rgb.b/255
-        ),
-        font:
-          obj.bold
-          ? undefined
-          : undefined
-       }
-     );
-
-    }
-
-
-    if(obj.type==="new"){
-
-     const pdfX=
-       obj.x/zoom;
-
-     const pdfY=
-       pageHeight-
-       (obj.y/zoom)-
-       (obj.fontSize/zoom);
-
-
-     const rgb=
-       hexToRgb(
-         obj.color || "#111111"
-       );
-
-
-     pdfPage.drawText(
-       obj.text,
-       {
-        x:pdfX,
-        y:pdfY,
-        size:obj.fontSize/zoom,
-        color:PDFLib.rgb(
-          rgb.r/255,
-          rgb.g/255,
-          rgb.b/255
-        )
-       }
-     );
-
-    }
-
-
-    if(obj.type==="signature"){
-
-     const bytes =
-       dataURLToBytes(
-         obj.data
-       );
-
-     const image =
-       await pdf.embedPng(bytes);
-
-     pdfPage.drawImage(
-       image,
-       {
-        x:obj.x/zoom,
-        y:
-          pageHeight-
-          obj.y/zoom-
-          obj.height/zoom,
-
-        width:obj.width/zoom,
-        height:obj.height/zoom
-       }
-     );
-
-    }
-
-   }
-
-  }
-
-
-  const output =
-    await pdf.save({
-      useObjectStreams:true
-    });
-
-
-  const blob =
-    new Blob(
-      [output],
-      {
-       type:"application/pdf"
-      }
-    );
-
-  const url=
-    URL.createObjectURL(blob);
-
-  const a=
-    document.createElement("a");
-
-  a.href=url;
-  a.download="PDFix-Edited.pdf";
-
-  document.body.appendChild(a);
-
-  a.click();
-
-  a.remove();
-
-  URL.revokeObjectURL(url);
-
-  setStatus(
-    "Edited PDF downloaded successfully."
-  );
-
- }catch(error){
-
-  console.error(error);
-
-  alert(
-   "PDF export failed. Please try another PDF."
-  );
-
-  setStatus("Export failed.");
-
- }
-
 }
 
 
-/*
------------------------------------
-BACKGROUND RECTANGLE
------------------------------------
-*/
-
-function pageBackground(
- page,
- x,
- y,
- width,
- height
-){
-
- page.drawRectangle({
-  x:x-1,
-  y:y-2,
-  width:width+4,
-  height:height+5,
-  color:PDFLib.rgb(
-   1,1,1
-  ),
-  opacity:1
- });
-
-}
-
-
-/*
------------------------------------
-HEX TO RGB
------------------------------------
-*/
-
-function hexToRgb(hex){
-
- hex=hex.replace("#","");
-
- return{
-  r:parseInt(
-    hex.substring(0,2),16
-  ),
-  g:parseInt(
-    hex.substring(2,4),16
-  ),
-  b:parseInt(
-    hex.substring(4,6),16
-  )
- };
-
-}
-
-
-/*
------------------------------------
-DATA URL
------------------------------------
-*/
-
-function dataURLToBytes(dataURL){
-
- const base64=
-   dataURL.split(",")[1];
-
- const binary=
-   atob(base64);
-
- const bytes=
-   new Uint8Array(
-     binary.length
-   );
-
- for(
-   let i=0;
-   i<binary.length;
-   i++
- ){
-   bytes[i]=
-     binary.charCodeAt(i);
- }
-
- return bytes;
-
-}
-
-
-/*
------------------------------------
-ZOOM
------------------------------------
-*/
+/* =========================================================
+   ZOOM
+========================================================= */
 
 async function zoomIn(){
 
- if(!pdfDocument) return;
+    if(!pdfDoc){
+        return;
+    }
 
- zoom+=.2;
+    zoom += .15;
 
- await reloadEditor();
+    await renderAllPages();
 
 }
 
 
 async function zoomOut(){
 
- if(!pdfDocument) return;
+    if(!pdfDoc){
+        return;
+    }
 
- zoom=Math.max(
-   .6,
-   zoom-.2
- );
+    zoom =
+        Math.max(
+            .5,
+            zoom - .15
+        );
 
- await reloadEditor();
-
-}
-
-
-async function reloadEditor(){
-
- pages=[];
-
- await renderAllPages();
+    await renderAllPages();
 
 }
 
 
-/*
------------------------------------
-PAGE NAVIGATION
------------------------------------
-*/
+async function resetZoom(){
 
-function nextPage(){
+    if(!pdfDoc){
+        return;
+    }
 
- if(
-   currentPage<
-   pdfDocument.numPages
- ){
-  currentPage++;
-  scrollToPage(currentPage);
-  updatePageUI();
- }
+    zoom = 1.25;
+
+    await renderAllPages();
 
 }
 
 
-function previousPage(){
+/* =========================================================
+   HISTORY
+========================================================= */
 
- if(currentPage>1){
+function saveHistory(){
 
-  currentPage--;
-
-  scrollToPage(currentPage);
-
-  updatePageUI();
-
- }
-
-}
-
-
-function scrollToPage(n){
-
- const page =
-   document.querySelector(
-     `.page[data-page="${n}"]`
-   );
-
- if(page)
-   page.scrollIntoView({
-     behavior:"smooth",
-     block:"start"
-   });
-
-}
-
-
-function updatePageUI(){
-
- document.getElementById(
-   "pageCounter"
- ).textContent=
-   currentPage+
-   " / "+
-   (pdfDocument
-     ? pdfDocument.numPages
-     : 1);
-
- document
-   .querySelectorAll(".thumb")
-   .forEach((el,i)=>{
-
-    el.classList.toggle(
-      "active",
-      i+1===currentPage
+    history.push(
+        document.getElementById(
+            "pages"
+        ).innerHTML
     );
 
-   });
+
+    if(history.length > 20){
+
+        history.shift();
+
+    }
 
 }
 
 
-/*
------------------------------------
-MERGE
------------------------------------
-*/
+function undoAction(){
 
-async function mergePDF(){
+    if(history.length === 0){
+        return;
+    }
 
- const input =
-   document.createElement("input");
 
- input.type="file";
- input.accept="application/pdf";
- input.multiple=true;
+    const previous =
+        history.pop();
 
- input.onchange=async()=>{
 
-  if(input.files.length<2){
+    document.getElementById(
+        "pages"
+    ).innerHTML =
+        previous;
 
-   alert(
-    "Select at least 2 PDF files."
-   );
 
-   return;
-
-  }
-
-  setStatus("Merging PDFs...");
-
-  const merged =
-    await PDFLib.PDFDocument.create();
-
-  for(
-    const file of input.files
-  ){
-
-   const bytes=
-     await file.arrayBuffer();
-
-   const doc=
-     await PDFLib.PDFDocument.load(
-       bytes
-     );
-
-   const copied=
-     await merged.copyPages(
-       doc,
-       doc.getPageIndices()
-     );
-
-   copied.forEach(
-     p=>merged.addPage(p)
-   );
-
-  }
-
-  const bytes=
-    await merged.save();
-
-  downloadBlob(
-    bytes,
-    "PDFix-Merged.pdf"
-  );
-
-  setStatus("PDFs merged.");
-
- };
-
- input.click();
+    document
+    .querySelectorAll(
+        ".added-text,.signature"
+    )
+    .forEach(
+        el => makeDraggable(el)
+    );
 
 }
 
 
-/*
------------------------------------
-SPLIT
------------------------------------
-*/
+/* =========================================================
+   DOWNLOAD
+========================================================= */
+
+async function downloadPDF(){
+
+    if(!originalPdfBytes){
+
+        showStatus(
+            "Please upload a PDF first.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        showStatus(
+            "Creating edited PDF...",
+            "normal"
+        );
+
+
+        const pdfDocLib =
+            await PDFLib.PDFDocument.load(
+                originalPdfBytes
+            );
+
+
+        const pages =
+            pdfDocLib.getPages();
+
+
+        /*
+         Existing edited text
+        */
+
+        document
+        .querySelectorAll(
+            ".text-item[data-edited='true']"
+        )
+        .forEach(
+            element => {
+
+                const pageNumber =
+                    parseInt(
+                        element.dataset.page
+                    );
+
+
+                const page =
+                    pages[pageNumber - 1];
+
+
+                if(!page){
+                    return;
+                }
+
+
+                const rect =
+                    element.getBoundingClientRect();
+
+
+                const wrapper =
+                    element.parentElement
+                    .parentElement;
+
+
+                const wrapperRect =
+                    wrapper.getBoundingClientRect();
+
+
+                const x =
+                    (
+                        rect.left -
+                        wrapperRect.left
+                    ) / zoom;
+
+
+                const top =
+                    (
+                        rect.top -
+                        wrapperRect.top
+                    ) / zoom;
+
+
+                const height =
+                    rect.height / zoom;
+
+
+                const pageHeight =
+                    page.getHeight();
+
+
+                const y =
+                    pageHeight -
+                    top -
+                    height;
+
+
+                /*
+                 Cover old text.
+                 */
+
+                page.drawRectangle({
+                    x:x,
+                    y:y,
+                    width:
+                        Math.max(
+                            rect.width / zoom,
+                            30
+                        ),
+                    height:
+                        Math.max(
+                            height,
+                            10
+                        ),
+                    color:
+                        PDFLib.rgb(
+                            1,
+                            1,
+                            1
+                        )
+                });
+
+
+                /*
+                 Draw replacement.
+                 */
+
+                const text =
+                    element.textContent;
+
+
+                const size =
+                    parseFloat(
+                        getComputedStyle(
+                            element
+                        ).fontSize
+                    ) / zoom;
+
+
+                page.drawText(
+                    text,
+                    {
+                        x:x,
+                        y:y + 2,
+                        size:
+                            Math.max(
+                                size,
+                                5
+                            ),
+                        color:
+                            PDFLib.rgb(
+                                0,
+                                0,
+                                0
+                            )
+                    }
+                );
+
+            }
+        );
+
+
+        /*
+         Add new text
+        */
+
+        document
+        .querySelectorAll(
+            ".added-text"
+        )
+        .forEach(
+            element => {
+
+                const pageNumber =
+                    parseInt(
+                        element.dataset.page
+                    );
+
+
+                const page =
+                    pages[pageNumber - 1];
+
+
+                if(!page){
+                    return;
+                }
+
+
+                const wrapper =
+                    element.parentElement;
+
+
+                const wrapperRect =
+                    wrapper.getBoundingClientRect();
+
+
+                const rect =
+                    element.getBoundingClientRect();
+
+
+                const x =
+                    (
+                        rect.left -
+                        wrapperRect.left
+                    ) / zoom;
+
+
+                const top =
+                    (
+                        rect.top -
+                        wrapperRect.top
+                    ) / zoom;
+
+
+                const fontSize =
+                    parseFloat(
+                        getComputedStyle(
+                            element
+                        ).fontSize
+                    ) / zoom;
+
+
+                const y =
+                    page.getHeight() -
+                    top -
+                    fontSize;
+
+
+                page.drawText(
+                    element.textContent,
+                    {
+                        x:x,
+                        y:y,
+                        size:
+                            fontSize,
+                        color:
+                            PDFLib.rgb(
+                                0.05,
+                                0.05,
+                                0.05
+                            )
+                    }
+                );
+
+            }
+        );
+
+
+        /*
+         Save
+        */
+
+        const bytes =
+            await pdfDocLib.save({
+                useObjectStreams:true
+            });
+
+
+        const blob =
+            new Blob(
+                [bytes],
+                {
+                    type:
+                        "application/pdf"
+                }
+            );
+
+
+        const url =
+            URL.createObjectURL(blob);
+
+
+        const a =
+            document.createElement("a");
+
+
+        a.href = url;
+
+        a.download =
+            "PDFix-edited.pdf";
+
+
+        document.body.appendChild(a);
+
+        a.click();
+
+        a.remove();
+
+
+        setTimeout(
+            () => URL.revokeObjectURL(url),
+            2000
+        );
+
+
+        showStatus(
+            "PDF downloaded successfully.",
+            "success"
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "DOWNLOAD ERROR:",
+            error
+        );
+
+
+        showStatus(
+            "Could not create the edited PDF: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SPLIT PDF
+========================================================= */
 
 async function splitPDF(){
 
- if(!originalBytes){
-  alert("Upload PDF first.");
-  return;
- }
+    if(!originalPdfBytes){
 
- const pageNo =
-   Number(
-    prompt(
-     "Enter page number to extract:",
-     currentPage
-    )
-   );
+        showStatus(
+            "Upload a PDF first.",
+            "error"
+        );
 
- if(
-   !pageNo ||
-   pageNo<1 ||
-   pageNo>pdfDocument.numPages
- ) return;
+        return;
 
- const doc=
-   await PDFLib.PDFDocument.load(
-     originalBytes
-   );
+    }
 
- const out=
-   await PDFLib.PDFDocument.create();
 
- const copied=
-   await out.copyPages(
-     doc,
-     [pageNo-1]
-   );
+    try{
 
- out.addPage(copied[0]);
+        const source =
+            await PDFLib.PDFDocument.load(
+                originalPdfBytes
+            );
 
- const bytes=
-   await out.save();
 
- downloadBlob(
-   bytes,
-   "PDFix-Split.pdf"
- );
+        const newPdf =
+            await PDFLib.PDFDocument.create();
+
+
+        const [page] =
+            await newPdf.copyPages(
+                source,
+                [currentPage - 1]
+            );
+
+
+        newPdf.addPage(page);
+
+
+        const bytes =
+            await newPdf.save();
+
+
+        downloadBytes(
+            bytes,
+            `PDFix-page-${currentPage}.pdf`
+        );
+
+
+    }catch(e){
+
+        showStatus(
+            "Split failed: " + e.message,
+            "error"
+        );
+
+    }
 
 }
 
 
-/*
------------------------------------
-ROTATE
------------------------------------
-*/
+/* =========================================================
+   ROTATE PDF
+========================================================= */
 
 async function rotatePDF(){
 
- if(!originalBytes){
-  alert("Upload PDF first.");
-  return;
- }
-
- const doc=
-   await PDFLib.PDFDocument.load(
-     originalBytes
-   );
-
- doc.getPages().forEach(page=>{
-
-  const current=
-    page.getRotation().angle;
-
-  page.setRotation(
-    PDFLib.degrees(
-      current+90
-    )
-  );
-
- });
-
- const bytes=
-   await doc.save();
-
- downloadBlob(
-   bytes,
-   "PDFix-Rotated.pdf"
- );
-
-}
+    if(!originalPdfBytes){
+        return;
+    }
 
 
-/*
------------------------------------
-DOWNLOAD BLOB
------------------------------------
-*/
+    try{
 
-function downloadBlob(
- bytes,
- filename
-){
+        const doc =
+            await PDFLib.PDFDocument.load(
+                originalPdfBytes
+            );
 
- const blob=
-   new Blob(
-     [bytes],
-     {
-      type:"application/pdf"
-     }
-   );
 
- const url=
-   URL.createObjectURL(blob);
+        const page =
+            doc.getPages()[
+                currentPage - 1
+            ];
 
- const a=
-   document.createElement("a");
 
- a.href=url;
- a.download=filename;
+        const currentRotation =
+            page.getRotation().angle;
 
- document.body.appendChild(a);
 
- a.click();
+        page.setRotation(
+            PDFLib.degrees(
+                currentRotation + 90
+            )
+        );
 
- a.remove();
 
- URL.revokeObjectURL(url);
+        const bytes =
+            await doc.save();
+
+
+        downloadBytes(
+            bytes,
+            "PDFix-rotated.pdf"
+        );
+
+
+    }catch(e){
+
+        showStatus(
+            "Rotate failed: " + e.message,
+            "error"
+        );
+
+    }
 
 }
 
 
-/*
------------------------------------
-NEW PDF
------------------------------------
-*/
+/* =========================================================
+   MERGE
+========================================================= */
 
-function newPDF(){
+function openMerge(){
 
- location.reload();
-
-}
-
-
-/*
------------------------------------
-MODAL
------------------------------------
-*/
-
-function closeModal(id){
-
- document.getElementById(id)
-  .style.display="none";
+    document.getElementById(
+        "mergeModal"
+    ).style.display =
+        "flex";
 
 }
 
 
-/*
------------------------------------
-STATUS
------------------------------------
-*/
+function closeMerge(){
 
-function setStatus(text){
-
- document.getElementById(
-   "status"
- ).textContent=text;
+    document.getElementById(
+        "mergeModal"
+    ).style.display =
+        "none";
 
 }
+
+
+async function mergePDFs(){
+
+    const input =
+        document.getElementById(
+            "mergeInput"
+        );
+
+
+    const files =
+        Array.from(
+            input.files
+        );
+
+
+    if(files.length < 2){
+
+        alert(
+            "Please select at least 2 PDF files."
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        const merged =
+            await PDFLib.PDFDocument.create();
+
+
+        for(const file of files){
+
+            const buffer =
+                await file.arrayBuffer();
+
+
+            const doc =
+                await PDFLib.PDFDocument.load(
+                    new Uint8Array(buffer)
+                );
+
+
+            const copied =
+                await merged.copyPages(
+                    doc,
+                    doc.getPageIndices()
+                );
+
+
+            copied.forEach(
+                page => merged.addPage(page)
+            );
+
+        }
+
+
+        const bytes =
+            await merged.save();
+
+
+        downloadBytes(
+            bytes,
+            "PDFix-merged.pdf"
+        );
+
+
+        closeMerge();
+
+
+    }catch(e){
+
+        showStatus(
+            "Merge failed: " + e.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   DOWNLOAD BYTES
+========================================================= */
+
+function downloadBytes(bytes,filename){
+
+    const blob =
+        new Blob(
+            [bytes],
+            {
+                type:"application/pdf"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const a =
+        document.createElement("a");
+
+
+    a.href = url;
+
+    a.download = filename;
+
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+
+    setTimeout(
+        () => URL.revokeObjectURL(url),
+        2000
+    );
+
+}
+
+
+/* =========================================================
+   INITIAL MESSAGE
+========================================================= */
+
+showStatus(
+    "Choose a PDF to start editing.",
+    "normal"
+);
 
 </script>
 
