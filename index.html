@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>PDFix - All-in-One PDF Tools</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f7f8fc;
+color:#171717;
+}
+
+header{
+height:70px;
+background:#fff;
+border-bottom:1px solid #e5e7eb;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 6%;
+position:sticky;
+top:0;
+z-index:50;
+}
+
+.logo{
+font-size:27px;
+font-weight:800;
+letter-spacing:-1px;
+}
+
+.logo span{
+color:#e5093f;
+}
+
+.nav button{
+background:#111827;
+color:#fff;
+border:0;
+padding:11px 18px;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.hero{
+text-align:center;
+padding:65px 18px 45px;
+}
+
+.hero h1{
+font-size:46px;
+line-height:1.1;
+margin-bottom:18px;
+}
+
+.hero h1 span{
+color:#e5093f;
+}
+
+.hero p{
+color:#667085;
+font-size:18px;
+}
+
+.upload{
+max-width:700px;
+margin:35px auto 0;
+background:#fff;
+border:2px dashed #cbd5e1;
+border-radius:18px;
+padding:48px 20px;
+}
+
+.upload-icon{
+font-size:55px;
+margin-bottom:15px;
+}
+
+.upload h2{
+margin-bottom:8px;
+}
+
+.upload p{
+font-size:14px;
+}
+
+.upload input{
+display:none;
+}
+
+.upload-label{
+display:inline-block;
+margin-top:20px;
+padding:14px 28px;
+background:#e5093f;
+color:white;
+border-radius:9px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.section{
+max-width:1100px;
+margin:auto;
+padding:20px;
+}
+
+.section h2{
+text-align:center;
+margin-bottom:25px;
+}
+
+.tools{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:16px;
+padding-bottom:70px;
+}
+
+.tool{
+background:#fff;
+border:1px solid #e5e7eb;
+border-radius:14px;
+padding:23px 18px;
+cursor:pointer;
+transition:.2s;
+}
+
+.tool:hover{
+transform:translateY(-4px);
+box-shadow:0 10px 25px #00000012;
+}
+
+.tool-icon{
+font-size:31px;
+margin-bottom:12px;
+}
+
+.tool h3{
+font-size:17px;
+margin-bottom:7px;
+}
+
+.tool p{
+font-size:13px;
+color:#667085;
+line-height:1.5;
+}
+
+.workspace{
+display:none;
+max-width:1200px;
+margin:20px auto;
+padding:15px;
+}
+
+.workspace.show{
+display:block;
+}
+
+.toolbar{
+background:white;
+border:1px solid #ddd;
+padding:12px;
+border-radius:10px;
+display:flex;
+justify-content:space-between;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:15px;
+}
+
+.toolbar button{
+border:0;
+padding:10px 14px;
+border-radius:7px;
+background:#111827;
+color:white;
+cursor:pointer;
+}
+
+.toolbar .red{
+background:#e5093f;
+}
+
+.pdf-area{
+background:#dfe3e8;
+border-radius:14px;
+min-height:500px;
+padding:20px;
+overflow:auto;
+}
+
+.pdf-page{
+position:relative;
+background:#fff;
+width:max-content;
+margin:0 auto 25px;
+box-shadow:0 5px 25px #0003;
+}
+
+.pdf-page canvas{
+display:block;
+}
+
+.text-item{
+position:absolute;
+min-width:100px;
+padding:5px;
+border:1px dashed #555;
+background:#ffffffdd;
+cursor:move;
+}
+
+.signature-item{
+position:absolute;
+width:190px;
+cursor:move;
+}
+
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:#0009;
+z-index:100;
+align-items:center;
+justify-content:center;
+padding:15px;
+}
+
+.modal.show{
+display:flex;
+}
+
+.modal-box{
+width:100%;
+max-width:540px;
+background:#fff;
+border-radius:16px;
+padding:22px;
+}
+
+.modal-box h2{
+margin-bottom:18px;
+}
+
+.modal-box input{
+width:100%;
+padding:12px;
+border:1px solid #d1d5db;
+border-radius:8px;
+margin-bottom:14px;
+}
+
+.signature-pad{
+width:100%;
+height:210px;
+border:2px dashed #aaa;
+border-radius:10px;
+background:#fff;
+}
+
+.actions{
+display:flex;
+justify-content:flex-end;
+gap:10px;
+margin-top:15px;
+}
+
+.actions button{
+border:0;
+padding:10px 16px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.primary{
+background:#e5093f;
+color:white;
+}
+
+footer{
+background:#111827;
+color:#aaa;
+text-align:center;
+padding:35px 15px;
+}
+
+@media(max-width:850px){
+
+.tools{
+grid-template-columns:repeat(2,1fr);
+}
+
+.hero h1{
+font-size:36px;
+}
+
+}
+
+@media(max-width:500px){
+
+.tools{
+grid-template-columns:1fr;
+}
+
+.hero{
+padding-top:45px;
+}
+
+.hero h1{
+font-size:31px;
+}
+
+header{
+padding:0 18px;
+}
+
+.logo{
+font-size:24px;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+PDF<span>ix</span>
+</div>
+
+<div class="nav">
+<button onclick="choosePDF()">Upload PDF</button>
+</div>
+
+</header>
+
+
+<section class="hero">
+
+<h1>
+Everything PDF.<br>
+<span>Made Simple.</span>
+</h1>
+
+<p>
+Edit, Fill, Sign, Merge, Split and manage your PDF online.
+</p>
+
+<div class="upload">
+
+<div class="upload-icon">📄</div>
+
+<h2>Upload your PDF</h2>
+
+<p>Select a PDF from your phone or computer</p>
+
+<label class="upload-label">
+
+Choose PDF
+
+<input
+id="pdfInput"
+type="file"
+accept="application/pdf"
+>
+
+</label>
+
+</div>
+
+</section>
+
+
+<section class="section">
+
+<h2>All PDF Tools</h2>
+
+<div class="tools">
+
+<div class="tool" onclick="choosePDF()">
+<div class="tool-icon">✏️</div>
+<h3>Edit PDF</h3>
+<p>Add text and edit your document.</p>
+</div>
+
+
+<div class="tool" onclick="openSign()">
+<div class="tool-icon">📝</div>
+<h3>Fill & Sign</h3>
+<p>Fill forms and sign documents.</p>
+</div>
+
+
+<div class="tool" onclick="openSign()">
+<div class="tool-icon">✍️</div>
+<h3>Draw Signature</h3>
+<p>Create a signature with your finger.</p>
+</div>
+
+
+<div class="tool" onclick="mergeOpen()">
+<div class="tool-icon">📑</div>
+<h3>Merge PDF</h3>
+<p>Combine multiple PDFs.</p>
+</div>
+
+
+<div class="tool" onclick="splitOpen()">
+<div class="tool-icon">✂️</div>
+<h3>Split PDF</h3>
+<p>Extract a page from a PDF.</p>
+</div>
+
+
+<div class="tool" onclick="rotatePDF()">
+<div class="tool-icon">🔄</div>
+<h3>Rotate PDF</h3>
+<p>Rotate your PDF pages.</p>
+</div>
+
+
+<div class="tool" onclick="signatureCheck()">
+<div class="tool-icon">🔍</div>
+<h3>Signature Check</h3>
+<p>Inspect signature-related content.</p>
+</div>
+
+
+<div class="tool" onclick="choosePDF()">
+<div class="tool-icon">📦</div>
+<h3>Compress PDF</h3>
+<p>Create an optimized PDF copy.</p>
+</div>
+
+</div>
+
+</section>
+
+
+<section
+id="workspace"
+class="workspace"
+>
+
+<div class="toolbar">
+
+<div>
+
+<button onclick="addText()">
+➕ Add Text
+</button>
+
+<button onclick="openSign()">
+✍️ Sign
+</button>
+
+</div>
+
+<div>
+
+<button onclick="rotatePDF()">
+🔄 Rotate
+</button>
+
+<button
+class="red"
+onclick="downloadPDF()"
+>
+⬇️ Download PDF
+</button>
+
+</div>
+
+</div>
+
+
+<div
+id="pdfArea"
+class="pdf-area"
+></div>
+
+</section>
+
+
+<!-- SIGNATURE -->
+
+<div
+id="signModal"
+class="modal"
+>
+
+<div class="modal-box">
+
+<h2>Fill & Sign</h2>
+
+<input
+id="nameText"
+placeholder="Type name or text"
+>
+
+<p style="margin-bottom:8px">
+Draw your signature
+</p>
+
+<canvas
+id="signaturePad"
+class="signature-pad"
+></canvas>
+
+<p style="margin:14px 0 8px">
+Or upload signature
+</p>
+
+<input
+id="signatureFile"
+type="file"
+accept="image/*"
+>
+
+<div class="actions">
+
+<button onclick="closeModals()">
+Cancel
+</button>
+
+<button
+class="primary"
+onclick="applySignature()"
+>
+Add Signature
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- MERGE -->
+
+<div
+id="mergeModal"
+class="modal"
+>
+
+<div class="modal-box">
+
+<h2>Merge PDF</h2>
+
+<p style="margin-bottom:15px">
+Select two or more PDF files.
+</p>
+
+<input
+id="mergeInput"
+type="file"
+accept="application/pdf"
+multiple
+>
+
+<div class="actions">
+
+<button onclick="closeModals()">
+Cancel
+</button>
+
+<button
+class="primary"
+onclick="mergePDF()"
+>
+Merge & Download
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- SPLIT -->
+
+<div
+id="splitModal"
+class="modal"
+>
+
+<div class="modal-box">
+
+<h2>Split PDF</h2>
+
+<input
+id="splitPage"
+type="number"
+min="1"
+placeholder="Enter page number"
+>
+
+<div class="actions">
+
+<button onclick="closeModals()">
+Cancel
+</button>
+
+<button
+class="primary"
+onclick="splitPDF()"
+>
+Extract Page
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- SIGNATURE CHECK -->
+
+<div
+id="checkModal"
+class="modal"
+>
+
+<div class="modal-box">
+
+<h2>🔍 Signature Check</h2>
+
+<p style="line-height:1.7;color:#555">
+
+This tool is designed to inspect
+signature-related content in a document.
+
+<br><br>
+
+<b>Important:</b>
+
+It does not certify that an Aadhaar Card,
+identity document, or signature is genuine.
+
+Official identity verification should be
+done through the appropriate official service.
+
+</p>
+
+<div class="actions">
+
+<button
+class="primary"
+onclick="closeModals()"
+>
+Close
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<footer>
+
+<strong>PDFix</strong>
+
+<br><br>
+
+Edit • Fill • Sign • Merge • Split
+
+<br><br>
+
+© 2026 PDFix
+
+</footer>
+
+
+<script>
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+
+let currentFile=null;
+let currentPDF=null;
+let rotation=0;
+let signaturePad=null;
+
+
+const pdfInput=
+document.getElementById("pdfInput");
+
+
+pdfInput.addEventListener(
+"change",
+async function(){
+
+if(!this.files.length)return;
+
+currentFile=this.files[0];
+
+await loadPDF(currentFile);
+
+}
+);
+
+
+function choosePDF(){
+
+pdfInput.click();
+
+}
+
+
+async function loadPDF(file){
+
+const buffer=
+await file.arrayBuffer();
+
+currentPDF=
+await PDFLib.PDFDocument.load(buffer);
+
+document.querySelector(".hero")
+.style.display="none";
+
+document.querySelector(".section")
+.style.display="none";
+
+document.getElementById("workspace")
+.classList.add("show");
+
+await renderPDF(buffer);
+
+}
+
+
+async function renderPDF(buffer){
+
+const pdf=
+await pdfjsLib.getDocument({
+data:buffer
+}).promise;
+
+const area=
+document.getElementById("pdfArea");
+
+area.innerHTML="";
+
+for(
+let i=1;
+i<=pdf.numPages;
+i++
+){
+
+const page=
+await pdf.getPage(i);
+
+const viewport=
+page.getViewport({
+scale:1.25,
+rotation:rotation
+});
+
+const wrapper=
+document.createElement("div");
+
+wrapper.className="pdf-page";
+
+const canvas=
+document.createElement("canvas");
+
+canvas.width=
+viewport.width;
+
+canvas.height=
+viewport.height;
+
+wrapper.appendChild(canvas);
+
+area.appendChild(wrapper);
+
+await page.render({
+
+canvasContext:
+canvas.getContext("2d"),
+
+viewport:viewport
+
+}).promise;
+
+}
+
+}
+
+
+function addText(){
+
+if(!currentPDF){
+
+alert("Upload a PDF first.");
+
+return;
+
+}
+
+const page=
+document.querySelector(".pdf-page");
+
+if(!page)return;
+
+const text=
+document.createElement("div");
+
+text.className="text-item";
+
+text.contentEditable=true;
+
+text.innerText="Type here";
+
+text.style.left="50px";
+
+text.style.top="50px";
+
+text.style.fontSize="18px";
+
+page.appendChild(text);
+
+text.focus();
+
+}
+
+
+function openSign(){
+
+if(!currentPDF){
+
+alert("Please upload a PDF first.");
+
+return;
+
+}
+
+document.getElementById("signModal")
+.classList.add("show");
+
+setTimeout(()=>{
+
+const canvas=
+document.getElementById("signaturePad");
+
+signaturePad=
+new SignaturePad(canvas);
+
+},100);
+
+}
+
+
+function applySignature(){
+
+const text=
+document.getElementById("nameText").value.trim();
+
+const page=
+document.querySelector(".pdf-page");
+
+if(!page){
+
+closeModals();
+
+return;
+
+}
+
+
+if(text){
+
+const item=
+document.createElement("div");
+
+item.className="text-item";
+
+item.innerText=text;
+
+item.style.left="50px";
+
+item.style.top="100px";
+
+item.style.fontSize="20px";
+
+page.appendChild(item);
+
+}
+
+
+if(signaturePad &&
+!signaturePad.isEmpty()){
+
+const img=
+document.createElement("img");
+
+img.src=
+signaturePad.toDataURL("image/png");
+
+img.className="signature-item";
+
+img.style.left="50px";
+
+img.style.top="150px";
+
+page.appendChild(img);
+
+}
+
+
+const file=
+document.getElementById("signatureFile")
+.files[0];
+
+if(file){
+
+const reader=
+new FileReader();
+
+reader.onload=function(e){
+
+const img=
+document.createElement("img");
+
+img.src=e.target.result;
+
+img.className="signature-item";
+
+img.style.left="50px";
+
+img.style.top="150px";
+
+page.appendChild(img);
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+
+closeModals();
+
+}
+
+
+async function downloadPDF(){
+
+if(!currentPDF){
+
+alert("Upload a PDF first.");
+
+return;
+
+}
+
+const pages=
+document.querySelectorAll(".pdf-page");
+
+const firstPage=pages[0];
+
+const pdfPage=
+currentPDF.getPages()[0];
+
+const canvas=
+firstPage.querySelector("canvas");
+
+const scaleX=
+pdfPage.getWidth()/canvas.width;
+
+const scaleY=
+pdfPage.getHeight()/canvas.height;
+
+
+const texts=
+firstPage.querySelectorAll(".text-item");
+
+
+texts.forEach(item=>{
+
+const x=
+parseFloat(item.style.left||0)*scaleX;
+
+const top=
+parseFloat(item.style.top||0);
+
+const y=
+pdfPage.getHeight()-
+(top+22)*scaleY;
+
+pdfPage.drawText(
+item.innerText,
+{
+x:x,
+y:y,
+size:14
+}
+);
+
+});
+
+
+const bytes=
+await currentPDF.save();
+
+downloadFile(
+bytes,
+"pdfix-edited.pdf"
+);
+
+}
+
+
+function downloadFile(bytes,name){
+
+const blob=
+new Blob(
+[bytes],
+{
+type:"application/pdf"
+}
+);
+
+const url=
+URL.createObjectURL(blob);
+
+const a=
+document.createElement("a");
+
+a.href=url;
+
+a.download=name;
+
+document.body.appendChild(a);
+
+a.click();
+
+a.remove();
+
+URL.revokeObjectURL(url);
+
+}
+
+
+async function rotatePDF(){
+
+if(!currentPDF){
+
+alert("Upload a PDF first.");
+
+return;
+
+}
+
+const pages=
+currentPDF.getPages();
+
+pages.forEach(page=>{
+
+const old=
+page.getRotation().angle;
+
+page.setRotation(
+PDFLib.degrees(
+(old+90)%360
+)
+);
+
+});
+
+rotation=
+(rotation+90)%360;
+
+const bytes=
+await currentPDF.save();
+
+await renderPDF(bytes);
+
+}
+
+
+function mergeOpen(){
+
+document.getElementById("mergeModal")
+.classList.add("show");
+
+}
+
+
+async function mergePDF(){
+
+const files=
+document.getElementById("mergeInput")
+.files;
+
+if(files.length<2){
+
+alert("Select at least 2 PDFs.");
+
+return;
+
+}
+
+const merged=
+await PDFLib.PDFDocument.create();
+
+for(const file of files){
+
+const buffer=
+await file.arrayBuffer();
+
+const doc=
+await PDFLib.PDFDocument.load(buffer);
+
+const pages=
+await merged.copyPages(
+doc,
+doc.getPageIndices()
+);
+
+pages.forEach(
+page=>merged.addPage(page)
+);
+
+}
+
+const bytes=
+await merged.save();
+
+downloadFile(
+bytes,
+"pdfix-merged.pdf"
+);
+
+closeModals();
+
+}
+
+
+function splitOpen(){
+
+if(!currentPDF){
+
+alert("Upload a PDF first.");
+
+return;
+
+}
+
+document.getElementById("splitModal")
+.classList.add("show");
+
+}
+
+
+async function splitPDF(){
+
+const pageNumber=
+parseInt(
+document.getElementById("splitPage").value
+);
+
+const total=
+currentPDF.getPageCount();
+
+if(
+!pageNumber ||
+pageNumber<1 ||
+pageNumber>total
+){
+
+alert("Invalid page number.");
+
+return;
+
+}
+
+const output=
+await PDFLib.PDFDocument.create();
+
+const [page]=
+await output.copyPages(
+currentPDF,
+[pageNumber-1]
+);
+
+output.addPage(page);
+
+const bytes=
+await output.save();
+
+downloadFile(
+bytes,
+"pdfix-page-"+pageNumber+".pdf"
+);
+
+closeModals();
+
+}
+
+
+function signatureCheck(){
+
+document.getElementById("checkModal")
+.classList.add("show");
+
+}
+
+
+function closeModals(){
+
+document.querySelectorAll(".modal")
+.forEach(
+modal=>modal.classList.remove("show")
+);
+
+}
+
+</script>
+
+</body>
+  </html>
